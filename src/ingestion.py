@@ -21,7 +21,7 @@ def load_data(file_path: str) -> pd.DataFrame:
     print(f"Loading data from {file_path}...")
     
     try:
-        df = pd.read_json(file_path, orient='index')
+        df = pd.read_json(file_path, orient='index') # index because the json is a dict of dicts
         print(f"Successfully loaded {len(df)} records.")
         return df
     except ValueError as e:
