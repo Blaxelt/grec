@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-
+from pathlib import Path
+from typing import Union
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -98,14 +99,18 @@ def _remove_redundant_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     return df_cleaned
 
 
-def save_data(df: pd.DataFrame, output_path: str):
+def save_data(df: pd.DataFrame, output_path: Union[str, Path]):
     """
     Saves the DataFrame to a JSON file.
     
     Args:
         df (pd.DataFrame): DataFrame to save.
-        output_path (str): Destination path.
+        output_path (Union[str, Path]): Destination path.
     """
+    output_path = Path(output_path)
+    
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    
     print(f"Saving processed data to {output_path}...")
     df.to_json(output_path, orient='records', indent=4, force_ascii=False)
     print("Save complete.")

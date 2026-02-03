@@ -1,19 +1,16 @@
 
-import os
+from pathlib import Path
 import sys
 
-# Ensure we can import from src if running from root
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT / 'src'))
 
-from src.ingestion import load_data
-from src.data_cleaning import clean_data, save_data
+from ingestion import load_data
+from data_cleaning import clean_data, save_data
 
 def main():
-    raw_data_path = 'data/raw/games.json'
-    clean_data_path = 'data/processed/games_cleaned.json'
-    
-    # Ensure processed directory exists
-    os.makedirs(os.path.dirname(clean_data_path), exist_ok=True)
+    raw_data_path = PROJECT_ROOT / 'data' / 'raw' / 'games.json'
+    clean_data_path = PROJECT_ROOT / 'data' / 'processed' / 'games_cleaned.json'
     
     try:
         # Load
