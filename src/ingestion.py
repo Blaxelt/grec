@@ -4,15 +4,16 @@ import json
 from pathlib import Path  
 from typing import Union
 
-def load_data(file_path: Union[str, Path]) -> pd.DataFrame:
+def load_data(file_path: Union[str, Path], raw: bool = True) -> pd.DataFrame:
     """
     Loads game data from a JSON file into a pandas DataFrame.
     
     Args:
         file_path (Union[str, Path]): Path to the input JSON file.
+        raw (bool): Whether the data is raw (True) or cleaned (False).
         
     Returns:
-        pd.DataFrame: DataFrame containing the raw game data.
+        pd.DataFrame: DataFrame containing the game data.
         
     Raises:
         FileNotFoundError: If the input file does not exist.
@@ -25,7 +26,10 @@ def load_data(file_path: Union[str, Path]) -> pd.DataFrame:
     print(f"Loading data from {file_path}...")
     
     try:
-        df = pd.read_json(file_path, orient='index') # index because the json is a dict of dicts
+        if raw:
+            df = pd.read_json(file_path, orient='index') # index because the json is a dict of dicts
+        else:
+            df = pd.read_json(file_path, orient='records')
         print(f"Successfully loaded {len(df)} records.")
         return df
     except ValueError as e:
