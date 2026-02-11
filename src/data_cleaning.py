@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 from typing import Union
 
-def clean_data(df: pd.DataFrame) -> pd.DataFrame:
+def clean_data(df: pd.DataFrame, output_path: Union[str, Path, None] = None) -> pd.DataFrame:
     """
     Clean the games dataset by removing invalid entries and handling duplicates.
     
@@ -10,6 +10,8 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     -----------
     df : pd.DataFrame
         Raw dataframe with game data
+    output_path : Union[str, Path, None]
+        If provided, saves the cleaned data to this path.
         
     Returns:
     --------
@@ -42,6 +44,9 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df = _remove_redundant_duplicates(df)
 
     df = df.reset_index().rename(columns={'index': 'app_id'})
+    
+    if output_path is not None:
+        save_data(df, output_path)
     
     return df
 
