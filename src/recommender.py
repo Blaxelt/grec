@@ -1,4 +1,5 @@
 from src.feature_engineering import load_features
+from src.ingestion import load_data
 from sklearn.metrics.pairwise import cosine_similarity
 
 class GameRecommender:
