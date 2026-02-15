@@ -1,0 +1,7 @@
+kagglehub==0.4.3
+numpy==2.4.1
+pandas==2.3.3
+scikit_learn==1.8.0
+psycopg==3.3.2
+pgvector==0.4.2
+python-dotenv==1.2.1
