@@ -1,69 +1,77 @@
-from src.feature_engineering import load_features
-from src.ingestion import load_data
-from sklearn.metrics.pairwise import cosine_similarity
+import os
+import psycopg
+from pgvector.psycopg import register_vector
 
 class GameRecommender:
-    def __init__(self, data_path, features_path):
-        self.df = load_data(data_path, raw=False)
-        features = load_features(features_path)
-        self.vectors = features['combined_vectors']
-        self.wilson_scores = features['wilson_scores']
+    def __init__(self):
+        self.conn_str = os.getenv("DATABASE_URL")
 
     def find_similar_games(self, game_name, top_n=10, quality_power=1.0):
         """
-        Find similar games using hybrid scoring: similarity × quality^power.
-        
-        This multiplicative approach ensures:
-        - Zero similarity = zero score (irrelevant games never surface)
-        - Quality acts as a boost/penalty on relevant games
-        
+        Find similar games using pgvector cosine similarity and Wilson score
+        quality boost, computed entirely in the database.
+
+        Hybrid score = cosine_similarity × wilson_score^quality_power
+
         Args:
-            game_name: Name of the target game
-            top_n: Number of results to return
-            quality_power: Exponent for quality influence (default 1.0)
-        
+            game_name: Name of the target game.
+            top_n: Number of results to return.
+            quality_power: Exponent for quality influence (default 1.0).
+
         Returns:
-            Dict mapping game indices to their top_n similar game indices,
-            or None if no games found
+            List of result dicts, or None if game not found.
         """
-        matches = self.df[self.df['name'].str.lower() == game_name.lower().strip()]
-        
-        if matches.empty:
-            print(f"No game found with name '{game_name}'")
-            return None
-        
-        results = {}
-        
-        for game_idx in matches.index:
-            target_game = self.df.loc[game_idx]
-            
-            print(f"\nFinding games similar to: {target_game['name']}")
-            if 'app_id' in self.df.columns:
-                print(f"App ID: {target_game['app_id']}")
-            print("-" * 80)
-            
-            similarities = cosine_similarity([self.vectors[game_idx]], self.vectors)[0]
-            
-            # Apply multiplicative quality boost
-            hybrid_scores = similarities * (self.wilson_scores ** quality_power)
-            
-            hybrid_scores[game_idx] = -1
-            top_indices = hybrid_scores.argsort()[-(top_n):][::-1]
-            
-            print(f"{'Rank':<5} {'Game Name':<42} {'Hybrid':<9} {'Sim':<9} {'Rating':<12} {'Reviews':<10}")
-            print("=" * 90)
-            
-            for rank, idx in enumerate(top_indices, 1):
-                name = self.df.loc[idx, 'name'][:100]
-                h_score = hybrid_scores[idx]
-                sim_score = similarities[idx]
-                
-                total_reviews = self.df.loc[idx, 'positive'] + self.df.loc[idx, 'negative']
-                rating_pct = (self.df.loc[idx, 'positive'] / total_reviews * 100) if total_reviews > 0 else 0
-                
-                print(f"{rank:<5} {name:<42} {h_score:.4f}    {sim_score:.4f}    "
-                    f"{rating_pct:>5.1f}%       {total_reviews:>,}")
-            
-            results[game_idx] = top_indices
-        
+        with psycopg.connect(self.conn_str) as conn:
+            with conn.cursor() as cur:
+                register_vector(conn)
+
+                # Look up the target game's vector
+                cur.execute(
+                    "SELECT id, game_name, combined_vector "
+                    "FROM games WHERE LOWER(game_name) = LOWER(%s)",
+                    (game_name.strip(),),
+                )
+                matches = cur.fetchall()
+
+                if not matches:
+                    print(f"No game found with name '{game_name}'")
+                    return None
+
+                results = {}
+
+                for target_id, target_name, target_vector in matches:
+                    print(f"\nFinding games similar to: {target_name}")
+                    print("-" * 80)
+
+                    cur.execute(
+                        """
+                        SELECT game_name,
+                               1 - (combined_vector <=> %s) AS similarity,
+                               wilson_score,
+                               (1 - (combined_vector <=> %s))
+                                   * power(wilson_score, %s) AS hybrid_score
+                        FROM games
+                        WHERE id != %s
+                        ORDER BY hybrid_score DESC
+                        LIMIT %s
+                        """,
+                        (target_vector, target_vector, quality_power,
+                         target_id, top_n),
+                    )
+                    rows = cur.fetchall()
+
+                    print(
+                        f"{'Rank':<5} {'Game Name':<42} {'Hybrid':<9} "
+                        f"{'Sim':<9} {'Wilson':<9}"
+                    )
+                    print("=" * 75)
+
+                    for rank, (name, sim, wilson, hybrid) in enumerate(rows, 1):
+                        print(
+                            f"{rank:<5} {name[:40]:<42} {hybrid:.4f}    "
+                            f"{sim:.4f}    {wilson:.4f}"
+                        )
+
+                    results[target_id] = rows
+
         return results

@@ -2,3 +2,4 @@ data
 .venv/
 src/__pycache__
 grec.egg-info
+.env

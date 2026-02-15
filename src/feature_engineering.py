@@ -2,6 +2,9 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from typing import Union
+import psycopg
+from pgvector.psycopg import register_vector
+import os
 
 from sklearn.preprocessing import normalize, MultiLabelBinarizer
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -165,7 +168,6 @@ def calculate_wilson_scores(df: pd.DataFrame, z: float = 1.96) -> np.ndarray:
 
 def engineer_features(
     df: pd.DataFrame,
-    output_dir: Union[str, Path],
     weights: dict[str, float] | None = None,
 ) -> None:
     """
@@ -174,7 +176,6 @@ def engineer_features(
     Args:
         df: Cleaned DataFrame with columns: name, genres, tags,
             positive, negative, short_description.
-        output_dir: Directory to save feature artifacts.
         weights: Optional custom weights for combining features.
     """
     print("Building feature vectors...")
@@ -196,41 +197,56 @@ def engineer_features(
     wilson_scores = calculate_wilson_scores(df)
     print(f"Wilson scores: {wilson_scores.shape}")
 
-    save_features(output_dir, combined_vectors, wilson_scores)
+    save_features(df, combined_vectors, wilson_scores)
 
 
 def save_features(
-    output_dir: Union[str, Path],
+    df: pd.DataFrame,
     combined_vectors: np.ndarray,
     wilson_scores: np.ndarray,
 ) -> None:
     """
-    Save pre-computed features to disk for later use by the recommender.
-
-    Args:
-        output_dir: Directory to save features in.
-        combined_vectors: Composite feature matrix.
-        wilson_scores: Array of Wilson scores.
+    Save pre-computed features to database.
     """
-    output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    with psycopg.connect(os.getenv("DATABASE_URL")) as conn:
+        conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
+        register_vector(conn)
+        with conn.cursor() as cur:
+            cur.execute(
+                "CREATE TABLE IF NOT EXISTS games ("
+                "id BIGSERIAL PRIMARY KEY, "
+                "game_name text, "
+                "combined_vector vector(860), "
+                "wilson_score float)"
+            )
 
-    np.save(output_dir / 'combined_vectors.npy', combined_vectors)
-    np.save(output_dir / 'wilson_scores.npy', wilson_scores)
+            data = [
+                (df.loc[i, 'name'], combined_vectors[i], float(wilson_scores[i]))
+                for i in range(len(combined_vectors))
+            ]
+            cur.executemany("INSERT INTO games (game_name, combined_vector, wilson_score) VALUES (%s, %s, %s)", data)
+            conn.commit()
+            print(f"Successfully inserted {len(data)} games to database.")
 
-    print(f"Features saved to {output_dir}/")
 
-
-def load_features(input_dir: Union[str, Path]) -> dict:
+def load_features() -> dict:
     """
-    Load pre-computed features from disk.
+    Load pre-computed features from database.
 
     Returns:
         Dict with keys: 'combined_vectors', 'wilson_scores'.
     """
-    input_dir = Path(input_dir)
+    with psycopg.connect(os.getenv("DATABASE_URL")) as conn:
+        register_vector(conn)
+        with conn.cursor() as cur:
+            cur.execute("SELECT combined_vector, wilson_score FROM games ORDER BY id")
+            rows = cur.fetchall()
 
+    combined_vectors = np.array([row[0] for row in rows])
+    wilson_scores = np.array([row[1] for row in rows])
+
+    print(f"Loaded {len(rows)} games from database.")
     return {
-        'combined_vectors': np.load(input_dir / 'combined_vectors.npy'),
-        'wilson_scores': np.load(input_dir / 'wilson_scores.npy'),
+        'combined_vectors': combined_vectors,
+        'wilson_scores': wilson_scores,
     }
