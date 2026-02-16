@@ -1,13 +1,11 @@
-
 import os
 from pathlib import Path
 import psycopg
 from dotenv import load_dotenv
 
-from src.ingestion import load_data
-from src.data_cleaning import clean_data
-from src.feature_engineering import engineer_features
-from src.recommender import GameRecommender
+from pipeline.ingestion import load_data
+from pipeline.data_cleaning import clean_data
+from pipeline.feature_engineering import engineer_features
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 load_dotenv()
@@ -40,11 +38,5 @@ def main():
     else:
         print("Games vectors already exist in database, skipping pipeline.")
 
-    # Recommendation
-    recommender = GameRecommender()
-    recommender.find_similar_games("Elden ring")
-
 if __name__ == '__main__':
     main()
-
-

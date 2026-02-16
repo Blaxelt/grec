@@ -5,3 +5,5 @@ scikit_learn==1.8.0
 psycopg==3.3.2
 pgvector==0.4.2
 python-dotenv==1.2.1
+fastapi[standard]==0.129.0
+sqlmodel==0.0.33    
