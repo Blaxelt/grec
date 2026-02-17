@@ -1,5 +1,5 @@
 data
 .venv/
-src/__pycache__
 grec.egg-info
 .env
+__pycache__/
