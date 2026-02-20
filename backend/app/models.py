@@ -12,7 +12,6 @@ class Game(SQLModel, table=True):
     combined_vector: list[float] = Field(sa_column=Column(Vector(860)))
     wilson_score: float
 
-
 class GameRecommendation(SQLModel):
     """A single recommended game."""
 
@@ -20,7 +19,6 @@ class GameRecommendation(SQLModel):
     similarity: float
     wilson_score: float
     hybrid_score: float
-
 
 class RecommendationResponse(SQLModel):
     """Response wrapper for the /recommend endpoint."""

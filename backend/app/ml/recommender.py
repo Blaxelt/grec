@@ -3,7 +3,6 @@ from sqlmodel import Session
 
 from app.models import GameRecommendation
 
-
 class GameRecommender:
 
     def find_similar_games(
@@ -20,7 +19,7 @@ class GameRecommender:
         Hybrid score = cosine_similarity × wilson_score^quality_power
 
         Args:
-            session: Database session (injected by FastAPI).
+            session: Database session.
             game_name: Name of the target game.
             top_n: Number of results to return.
             quality_power: Exponent for quality influence (default 1.0).
