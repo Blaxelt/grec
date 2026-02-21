@@ -12,6 +12,13 @@ class Game(SQLModel, table=True):
     combined_vector: list[float] = Field(sa_column=Column(Vector(860)))
     wilson_score: float
 
+
+class GameSearchResult(SQLModel):
+    """Search result."""
+
+    game_name: str
+
+
 class GameRecommendation(SQLModel):
     """A single recommended game."""
 
