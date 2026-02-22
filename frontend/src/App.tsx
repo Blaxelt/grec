@@ -70,8 +70,13 @@ function App() {
         {suggestions.length > 0 && (
           <ul className="suggestions">
             {suggestions.map((name) => (
-              <li key={name} onClick={() => selectGame(name)}>
-                {name}
+              <li key={name}>
+                <button
+                  onClick={() => selectGame(name)}
+                  className="suggestion-btn"
+                >
+                  {name}
+                </button>
               </li>
             ))}
           </ul>
