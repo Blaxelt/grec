@@ -1,7 +1,8 @@
-from sqlalchemy import text
-from sqlmodel import Session
+from sqlalchemy import func
+from sqlmodel import Session, select
 
-from app.models import GameRecommendation
+from app.models import Game, GameRecommendation
+
 
 class GameRecommender:
 
@@ -27,41 +28,28 @@ class GameRecommender:
         Returns:
             Tuple of (target_game_name, recommendations), or None if not found.
         """
-        # Look up the target game
-        row = session.exec(
-            text(
-                "SELECT id, game_name, combined_vector "
-                "FROM games WHERE LOWER(game_name) = LOWER(:name)"
-            ),
-            params={"name": game_name.strip()},
-        ).first()
+        stmt = select(Game).where(func.lower(Game.game_name) == game_name.strip().lower())
+        game = session.exec(stmt).first()
 
-        if not row:
+        if not game:
             return None
 
-        target_id, target_name, target_vector = row
+        similarity = (1 - Game.combined_vector.cosine_distance(game.combined_vector))
+        hybrid_score = similarity * func.power(Game.wilson_score, quality_power)
 
-        # Find similar games via pgvector cosine distance
-        results = session.exec(
-            text("""
-                SELECT game_name,
-                       header_image,
-                       1 - (combined_vector <=> :vec) AS similarity,
-                       wilson_score,
-                       (1 - (combined_vector <=> :vec))
-                           * power(wilson_score, :qp) AS hybrid_score
-                FROM games
-                WHERE id != :tid
-                ORDER BY hybrid_score DESC
-                LIMIT :topn
-            """),
-            params={
-                "vec": str(target_vector),
-                "qp": quality_power,
-                "tid": target_id,
-                "topn": top_n,
-            },
-        ).all()
+        stmt = (
+            select(
+                Game.game_name,
+                Game.header_image,
+                similarity.label("similarity"),
+                Game.wilson_score,
+                hybrid_score.label("hybrid_score"),
+            )
+            .where(Game.id != game.id)
+            .order_by(hybrid_score.desc())
+            .limit(top_n)
+        )
+        results = session.exec(stmt).all()
 
         recommendations = [
             GameRecommendation(
@@ -74,4 +62,4 @@ class GameRecommender:
             for name, header_img, sim, wilson, hybrid in results
         ]
 
-        return target_name, recommendations
+        return game.game_name, recommendations
