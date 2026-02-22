@@ -1,19 +1,13 @@
 import { useState, useEffect } from 'react'
 import './index.css'
 
-const API = 'http://localhost:8000'
-
-type Recommendation = {
-  game_name: string
-  similarity: number
-  wilson_score: number
-  hybrid_score: number
-}
+import { searchGamesGamesSearchGet, getRecommendationsRecommendGet } from './client'
+import type { GameRecommendation } from './client'
 
 function App() {
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<string[]>([])
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([])
+  const [recommendations, setRecommendations] = useState<GameRecommendation[]>([])
   const [targetGame, setTargetGame] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -25,9 +19,8 @@ function App() {
     }
 
     const timerId = setTimeout(async () => {
-      const res = await fetch(`${API}/games/search?q=${encodeURIComponent(query)}`)
-      const data = await res.json()
-      setSuggestions(data.map((g: { game_name: string }) => g.game_name))
+      const { data } = await searchGamesGamesSearchGet({ query: { q: query } })
+      setSuggestions((data ?? []).map((g) => g.game_name))
     }, 300)
 
     return () => clearTimeout(timerId)
@@ -40,9 +33,8 @@ function App() {
     setLoading(true)
 
     try {
-      const res = await fetch(`${API}/recommend?game=${encodeURIComponent(name)}`)
-      if (!res.ok) throw new Error('Not found')
-      const data = await res.json()
+      const { data } = await getRecommendationsRecommendGet({ query: { game: name } })
+      if (!data) throw new Error('Not found')
       setTargetGame(data.target_game)
       setRecommendations(data.recommendations)
     } catch {
