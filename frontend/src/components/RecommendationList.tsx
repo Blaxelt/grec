@@ -19,7 +19,11 @@ export function RecommendationList({ isLoading, isError, data }: Props) {
             <div className="results-list">
                 {data.recommendations.map((rec, i) => (
                     <div key={i} className="result-card">
-                        <span className="rank">{i + 1}</span>
+                        <img
+                            src={rec.header_image}
+                            alt={rec.game_name}
+                            className="result-image"
+                        />
                         <div className="result-info">
                             <span className="game-name">{rec.game_name}</span>
                             <span className="scores">

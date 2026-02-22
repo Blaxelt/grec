@@ -45,6 +45,7 @@ class GameRecommender:
         results = session.exec(
             text("""
                 SELECT game_name,
+                       header_image,
                        1 - (combined_vector <=> :vec) AS similarity,
                        wilson_score,
                        (1 - (combined_vector <=> :vec))
@@ -65,11 +66,12 @@ class GameRecommender:
         recommendations = [
             GameRecommendation(
                 game_name=name,
+                header_image=header_img,
                 similarity=round(sim, 4),
                 wilson_score=round(wilson, 4),
                 hybrid_score=round(hybrid, 4),
             )
-            for name, sim, wilson, hybrid in results
+            for name, header_img, sim, wilson, hybrid in results
         ]
 
         return target_name, recommendations

@@ -25,7 +25,7 @@ function App() {
   })
 
   const { data: recData, isLoading, isError } = useQuery({
-    ...getRecommendationsRecommendGetOptions({ query: { game: 'selectedGame3' } }),
+    ...getRecommendationsRecommendGetOptions({ query: { game: selectedGame } }),
     enabled: selectedGame.length > 0,
   })
 

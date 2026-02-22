@@ -141,11 +141,12 @@ h1 {
   border-radius: 8px;
 }
 
-.rank {
-  font-size: 0.8rem;
-  color: var(--text-dim);
-  min-width: 20px;
-  text-align: center;
+.result-image {
+  width: 120px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
 }
 
 .result-info {

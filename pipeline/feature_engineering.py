@@ -216,15 +216,16 @@ def save_features(
                 "CREATE TABLE IF NOT EXISTS games ("
                 "id BIGSERIAL PRIMARY KEY, "
                 "game_name text, "
+                "header_image text, "
                 "combined_vector vector(860), "
                 "wilson_score float)"
             )
 
             data = [
-                (df.loc[i, 'name'], combined_vectors[i], float(wilson_scores[i]))
+                (df.loc[i, 'name'], df.loc[i, 'header_image'], combined_vectors[i], float(wilson_scores[i]))
                 for i in range(len(combined_vectors))
             ]
-            cur.executemany("INSERT INTO games (game_name, combined_vector, wilson_score) VALUES (%s, %s, %s)", data)
+            cur.executemany("INSERT INTO games (game_name, header_image, combined_vector, wilson_score) VALUES (%s, %s, %s, %s)", data)
             conn.commit()
             print(f"Successfully inserted {len(data)} games to database.")
 
