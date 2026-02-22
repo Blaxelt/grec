@@ -2,11 +2,14 @@ import type { RecommendationResponse } from '../client'
 
 type Props = {
     isLoading: boolean
+    isError: boolean
     data: RecommendationResponse | undefined
 }
 
-export function RecommendationList({ isLoading, data }: Props) {
+export function RecommendationList({ isLoading, isError, data }: Props) {
     if (isLoading) return <p className="loading">Finding similar games...</p>
+
+    if (isError) return <p className="error">Could not load recommendations.</p>
 
     if (!data || data.recommendations.length === 0) return null
 

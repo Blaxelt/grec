@@ -24,8 +24,8 @@ function App() {
     enabled: debouncedQuery.length > 0 && query !== selectedGame,
   })
 
-  const { data: recData, isLoading } = useQuery({
-    ...getRecommendationsRecommendGetOptions({ query: { game: selectedGame } }),
+  const { data: recData, isLoading, isError } = useQuery({
+    ...getRecommendationsRecommendGetOptions({ query: { game: 'selectedGame3' } }),
     enabled: selectedGame.length > 0,
   })
 
@@ -37,7 +37,7 @@ function App() {
   return (
     <div className="container">
       <h1>GREC</h1>
-      <p className="subtitle">Game Recommendation Engine (Similarity Based Content)</p>
+      <p className="subtitle"><br />Game Recommendation Engine (Similarity Based Content)</p>
 
       <SearchBox
         query={query}
@@ -47,7 +47,7 @@ function App() {
         onSelectGame={selectGame}
       />
 
-      <RecommendationList isLoading={isLoading} data={recData} />
+      <RecommendationList isLoading={isLoading} isError={isError} data={recData} />
     </div>
   )
 }
