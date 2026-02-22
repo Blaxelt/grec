@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import './index.css'
 
 const API = 'http://localhost:8000'
@@ -16,24 +16,22 @@ function App() {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([])
   const [targetGame, setTargetGame] = useState('')
   const [loading, setLoading] = useState(false)
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   // Debounced search
   useEffect(() => {
-    if (query.length < 1) {
+    if (query.length < 1 || query === targetGame) {
       setSuggestions([])
       return
     }
 
-    clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(async () => {
+    const timerId = setTimeout(async () => {
       const res = await fetch(`${API}/games/search?q=${encodeURIComponent(query)}`)
       const data = await res.json()
       setSuggestions(data.map((g: { game_name: string }) => g.game_name))
     }, 300)
 
-    return () => clearTimeout(debounceRef.current)
-  }, [query])
+    return () => clearTimeout(timerId)
+  }, [query, targetGame])
 
   // Select a game → fetch recommendations
   const selectGame = async (name: string) => {
@@ -58,7 +56,7 @@ function App() {
   return (
     <div className="container">
       <h1>GREC</h1>
-      <p className="subtitle">Game Recommendation Engine</p>
+      <p className="subtitle">Game Recommendation Engine (Similarity Based Content)</p>
 
       <div className="search-wrapper">
         <input
