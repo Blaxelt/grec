@@ -1,0 +1,32 @@
+import type { RecommendationResponse } from '../client'
+
+type Props = {
+    isLoading: boolean
+    data: RecommendationResponse | undefined
+}
+
+export function RecommendationList({ isLoading, data }: Props) {
+    if (isLoading) return <p className="loading">Finding similar games...</p>
+
+    if (!data || data.recommendations.length === 0) return null
+
+    return (
+        <div className="results">
+            <h2>Games similar to {data.target_game}</h2>
+            <div className="results-list">
+                {data.recommendations.map((rec, i) => (
+                    <div key={i} className="result-card">
+                        <span className="rank">{i + 1}</span>
+                        <div className="result-info">
+                            <span className="game-name">{rec.game_name}</span>
+                            <span className="scores">
+                                similarity {(rec.similarity * 100).toFixed(1)}% · quality {(rec.wilson_score * 100).toFixed(1)}%
+                            </span>
+                        </div>
+                        <span className="hybrid">{(rec.hybrid_score * 100).toFixed(1)}%</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+}
