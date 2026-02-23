@@ -8,11 +8,15 @@ import {
 } from './client/@tanstack/react-query.gen'
 import { SearchBox } from './components/SearchBox'
 import { RecommendationList } from './components/RecommendationList'
+import { Filter } from './components/Filter'
 
 function App() {
   const [query, setQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const [selectedGame, setSelectedGame] = useState('')
+  const [topN, setTopN] = useState(10)
+  const [qualityPower, setQualityPower] = useState(1.0)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   useEffect(() => {
     const id = setTimeout(() => setDebouncedQuery(query), 300)
@@ -25,7 +29,7 @@ function App() {
   })
 
   const { data: recData, isLoading, isError } = useQuery({
-    ...getRecommendationsRecommendGetOptions({ query: { game: selectedGame } }),
+    ...getRecommendationsRecommendGetOptions({ query: { game: selectedGame, top_n: topN, quality_power: qualityPower } }),
     enabled: selectedGame.length > 0,
   })
 
@@ -39,12 +43,26 @@ function App() {
       <h1>GREC</h1>
       <p className="subtitle"><br />Game Recommendation Engine (Similarity Based Content)</p>
 
-      <SearchBox
-        query={query}
-        onQueryChange={setQuery}
-        suggestions={suggestions}
-        showSuggestions={query !== selectedGame}
-        onSelectGame={selectGame}
+      <div className="search-row">
+        <SearchBox
+          query={query}
+          onQueryChange={setQuery}
+          suggestions={suggestions}
+          showSuggestions={query !== selectedGame}
+          onSelectGame={selectGame}
+        />
+        <button className="filter-toggle" onClick={() => setIsFilterOpen(true)} title="Filters">
+          ⚙
+        </button>
+      </div>
+
+      <Filter
+        topN={topN}
+        qualityPower={qualityPower}
+        isOpen={isFilterOpen}
+        onTopNChange={setTopN}
+        onQualityPowerChange={setQualityPower}
+        onClose={() => setIsFilterOpen(false)}
       />
 
       <RecommendationList isLoading={isLoading} isError={isError} data={recData} />

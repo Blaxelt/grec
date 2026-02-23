@@ -40,8 +40,15 @@ h1 {
 
 /* ── Search ────────────────────────────────────────────── */
 
+.search-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 .search-wrapper {
   position: relative;
+  flex: 1;
 }
 
 .search-input {
@@ -98,6 +105,146 @@ h1 {
 
 .suggestions li:hover {
   background: #1a1a2e;
+}
+
+/* ── Filter Toggle Button ─────────────────────────────── */
+
+.filter-toggle {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+
+.filter-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #1a1a2e;
+}
+
+/* ── Filter Modal ─────────────────────────────────────── */
+
+.filter-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.filter-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 32px;
+  min-width: 320px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  animation: slideUp 0.2s ease-out;
+}
+
+.filter-modal h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-field label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.filter-field input[type="number"],
+.filter-field input[type="range"] {
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.filter-field input[type="number"]:focus {
+  border-color: var(--accent);
+}
+
+.filter-field input[type="range"] {
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.filter-field .range-value {
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 600;
+  text-align: right;
+}
+
+.filter-apply {
+  padding: 12px 0;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.filter-apply:hover {
+  opacity: 0.85;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── Results ───────────────────────────────────────────── */
