@@ -1,5 +1,6 @@
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import Column
+from sqlalchemy import Column, Text
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlmodel import Field, SQLModel
 
 class Game(SQLModel, table=True):
@@ -10,14 +11,29 @@ class Game(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     game_name: str
     header_image: str
+    short_description: str 
+    genres: list[str] = Field(sa_column=Column(ARRAY(Text)))
+    tags: list[str] = Field(sa_column=Column(ARRAY(Text)))
     combined_vector: list[float] = Field(sa_column=Column(Vector(860)))
-    wilson_score: float
+    wilson_score: float 
 
 
 class GameSearchResult(SQLModel):
     """Search result."""
 
     game_name: str
+
+
+class GameDetail(SQLModel):
+    """Full game detail for /games/{id}."""
+
+    id: int
+    game_name: str
+    header_image: str
+    short_description: str
+    genres: list[str]
+    tags: list[str]
+    wilson_score: float
 
 
 class GameRecommendation(SQLModel):

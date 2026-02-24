@@ -1,3 +1,4 @@
+
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -217,15 +218,30 @@ def save_features(
                 "id BIGSERIAL PRIMARY KEY, "
                 "game_name text, "
                 "header_image text, "
+                "short_description text, "
+                "genres text[], "
+                "tags text[], "
                 "combined_vector vector(860), "
                 "wilson_score float)"
             )
 
             data = [
-                (df.loc[i, 'name'], df.loc[i, 'header_image'], combined_vectors[i], float(wilson_scores[i]))
+                (
+                    df.loc[i, 'name'],
+                    df.loc[i, 'header_image'],
+                    df.loc[i, 'short_description'],
+                    df.loc[i, 'genres'],
+                    list(df.loc[i, 'tags'].keys()),
+                    combined_vectors[i],
+                    float(wilson_scores[i]),
+                )
                 for i in range(len(combined_vectors))
             ]
-            cur.executemany("INSERT INTO games (game_name, header_image, combined_vector, wilson_score) VALUES (%s, %s, %s, %s)", data)
+            cur.executemany(
+                "INSERT INTO games (game_name, header_image, short_description, genres, tags, combined_vector, wilson_score) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                data,
+            )
             conn.commit()
             print(f"Successfully inserted {len(data)} games to database.")
 

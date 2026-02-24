@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Query
-from sqlalchemy import text
+from fastapi import APIRouter, HTTPException, Query
+from sqlmodel import select
 
 from app.api.deps import SessionDep
-from app.models import GameSearchResult
+from app.models import Game, GameDetail, GameSearchResult
 
 router = APIRouter(prefix="/games", tags=["games"])
 
@@ -13,9 +13,24 @@ def search_games(
     limit: int = Query(5, ge=1, le=20),
 ):
     """Search games by name prefix."""
-    rows = session.exec(
-        text("SELECT game_name FROM games WHERE game_name ILIKE :prefix ORDER BY game_name LIMIT :lim"),
-        params={"prefix": f"{q}%", "lim": limit},
-    ).all()
+    stmt = select(Game.game_name).where(Game.game_name.ilike(f"{q}%")).order_by(Game.game_name).limit(limit)
+    rows = session.exec(stmt).all()
+    return [GameSearchResult(game_name=name) for name in rows]
 
-    return [GameSearchResult(game_name=row[0]) for row in rows]
+
+@router.get("/{game_id}", response_model=GameDetail)
+def get_game(session: SessionDep, game_id: int):
+    """Get full details for a single game."""
+    game = session.get(Game, game_id)
+    if not game:
+        raise HTTPException(status_code=404, detail="Game not found")
+
+    return GameDetail(
+        id=game.id,
+        game_name=game.game_name,
+        header_image=game.header_image,
+        short_description=game.short_description,
+        genres=game.genres or [],
+        tags=game.tags or [],
+        wilson_score=game.wilson_score,
+    )
