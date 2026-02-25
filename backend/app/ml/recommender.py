@@ -39,6 +39,7 @@ class GameRecommender:
 
         stmt = (
             select(
+                Game.id,
                 Game.game_name,
                 Game.header_image,
                 similarity.label("similarity"),
@@ -53,13 +54,14 @@ class GameRecommender:
 
         recommendations = [
             GameRecommendation(
+                id=game_id,
                 game_name=name,
                 header_image=header_img,
                 similarity=round(sim, 4),
                 wilson_score=round(wilson, 4),
                 hybrid_score=round(hybrid, 4),
             )
-            for name, header_img, sim, wilson, hybrid in results
+            for game_id, name, header_img, sim, wilson, hybrid in results
         ]
 
         return game.game_name, recommendations

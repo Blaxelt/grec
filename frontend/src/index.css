@@ -278,7 +278,7 @@ h1 {
   gap: 6px;
 }
 
-.result-card {
+a.result-card {
   display: flex;
   align-items: center;
   gap: 14px;
@@ -286,6 +286,13 @@ h1 {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s;
+}
+
+a.result-card:hover {
+  border-color: var(--accent);
 }
 
 .result-image {

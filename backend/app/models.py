@@ -39,6 +39,7 @@ class GameDetail(SQLModel):
 class GameRecommendation(SQLModel):
     """A single recommended game."""
 
+    id: int
     game_name: str
     header_image: str
     similarity: float

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { RecommendationResponse } from '../client'
 
 type Props = {
@@ -17,8 +18,8 @@ export function RecommendationList({ isLoading, isError, data }: Props) {
         <div className="results">
             <h2>Games similar to {data.target_game}</h2>
             <div className="results-list">
-                {data.recommendations.map((rec, i) => (
-                    <div key={i} className="result-card">
+                {data.recommendations.map((rec) => (
+                    <Link key={rec.id} to={`/games/${rec.id}`} className="result-card">
                         <img
                             src={rec.header_image}
                             alt={rec.game_name}
@@ -31,7 +32,7 @@ export function RecommendationList({ isLoading, isError, data }: Props) {
                             </span>
                         </div>
                         <span className="hybrid">{(rec.hybrid_score * 100).toFixed(1)}%</span>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </div>
