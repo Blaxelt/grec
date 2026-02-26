@@ -28,9 +28,10 @@ def get_game(session: SessionDep, game_id: int):
     return GameDetail(
         id=game.id,
         game_name=game.game_name,
-        header_image=game.header_image,
+        header_image=game.header_image or "",
         short_description=game.short_description,
-        genres=game.genres or [],
-        tags=game.tags or [],
+        genres=game.genres,
+        tags=game.tags,
+        screenshots=game.screenshots or [],
         wilson_score=game.wilson_score,
     )

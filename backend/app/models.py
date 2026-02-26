@@ -14,6 +14,7 @@ class Game(SQLModel, table=True):
     short_description: str 
     genres: list[str] = Field(sa_column=Column(ARRAY(Text)))
     tags: list[str] = Field(sa_column=Column(ARRAY(Text)))
+    screenshots: list[str] = Field(sa_column=Column(ARRAY(Text)))
     combined_vector: list[float] = Field(sa_column=Column(Vector(860)))
     wilson_score: float 
 
@@ -33,6 +34,7 @@ class GameDetail(SQLModel):
     short_description: str
     genres: list[str]
     tags: list[str]
+    screenshots: list[str]
     wilson_score: float
 
 

@@ -19,7 +19,7 @@ def clean_data(df: pd.DataFrame, output_path: Union[str, Path, None] = None) -> 
         Cleaned dataframe ready for processing
     """
     # Select potential columns needed for the system
-    cols_to_keep = ['name', 'genres', 'tags', 'positive', 'negative', 'short_description', 'header_image']
+    cols_to_keep = ['name', 'genres', 'tags', 'positive', 'negative', 'short_description', 'header_image', 'screenshots']
     df = df[cols_to_keep].copy()
     
     # Remove rows with empty name

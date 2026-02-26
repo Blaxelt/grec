@@ -221,6 +221,7 @@ def save_features(
                 "short_description text, "
                 "genres text[], "
                 "tags text[], "
+                "screenshots text[], "
                 "combined_vector vector(860), "
                 "wilson_score float)"
             )
@@ -232,14 +233,15 @@ def save_features(
                     df.loc[i, 'short_description'],
                     df.loc[i, 'genres'],
                     list(df.loc[i, 'tags'].keys()),
+                    df.loc[i, 'screenshots'] if isinstance(df.loc[i, 'screenshots'], list) else [],
                     combined_vectors[i],
                     float(wilson_scores[i]),
                 )
                 for i in range(len(combined_vectors))
             ]
             cur.executemany(
-                "INSERT INTO games (game_name, header_image, short_description, genres, tags, combined_vector, wilson_score) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                "INSERT INTO games (game_name, header_image, short_description, genres, tags, screenshots, combined_vector, wilson_score) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
                 data,
             )
             conn.commit()
