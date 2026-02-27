@@ -44,7 +44,7 @@ export function Filter({ topN, qualityPower, isOpen, onTopNChange, onQualityPowe
                     <input
                         type="range"
                         min={0}
-                        max={2}
+                        max={5}
                         step={0.1}
                         value={localQP}
                         onChange={(e) => setLocalQP(Number(e.target.value))}

@@ -10,11 +10,11 @@ class Game(SQLModel, table=True):
 
     id: int | None = Field(default=None, primary_key=True)
     game_name: str
-    header_image: str
-    short_description: str 
+    header_image: str | None
+    short_description: str
     genres: list[str] = Field(sa_column=Column(ARRAY(Text)))
     tags: list[str] = Field(sa_column=Column(ARRAY(Text)))
-    screenshots: list[str] = Field(sa_column=Column(ARRAY(Text)))
+    screenshots: list[str] | None = Field(default=None, sa_column=Column(ARRAY(Text)))
     combined_vector: list[float] = Field(sa_column=Column(Vector(860)))
     wilson_score: float 
 
@@ -30,11 +30,11 @@ class GameDetail(SQLModel):
 
     id: int
     game_name: str
-    header_image: str
+    header_image: str | None
     short_description: str
     genres: list[str]
     tags: list[str]
-    screenshots: list[str]
+    screenshots: list[str] | None
     wilson_score: float
 
 
@@ -43,7 +43,7 @@ class GameRecommendation(SQLModel):
 
     id: int
     game_name: str
-    header_image: str
+    header_image: str | None
     similarity: float
     wilson_score: float
     hybrid_score: float
