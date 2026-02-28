@@ -8,3 +8,6 @@ version = "0.1.0"
 
 [tool.setuptools.packages.find]
 include = ["pipeline", "pipeline.*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["backend"]

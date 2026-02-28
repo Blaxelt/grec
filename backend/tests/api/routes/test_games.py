@@ -1,6 +1,4 @@
 from unittest.mock import MagicMock
-
-import pytest
 from fastapi.testclient import TestClient
 
 import app.api.deps as deps

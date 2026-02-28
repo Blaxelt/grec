@@ -11,7 +11,7 @@ recommender = GameRecommender()
 @router.get("/recommend", response_model=RecommendationResponse)
 def get_recommendations(
     session: SessionDep,
-    game: str = Query(..., description="Name of the game to find recommendations for"),
+    game: str = Query(..., min_length=1, description="Name of the game to find recommendations for"),
     top_n: int = Query(10, ge=1, le=50, description="Number of recommendations"),
     quality_power: float = Query(1.0, ge=0.0, le=5.0, description="Quality weight exponent"),
 ):
