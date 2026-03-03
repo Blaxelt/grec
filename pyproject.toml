@@ -5,6 +5,26 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "grec"
 version = "0.1.0"
+dependencies = [
+    "psycopg==3.3.2",
+    "pgvector==0.4.2",
+    "python-dotenv==1.2.1",
+    "sqlmodel==0.0.33",
+]
+
+[project.optional-dependencies]
+backend = [
+    "fastapi[standard]==0.129.0",
+]
+pipeline = [
+    "kagglehub==0.4.3",
+    "numpy==2.4.1",
+    "pandas==2.3.3",
+    "scikit_learn==1.8.0",
+]
+dev = [
+    "pytest==9.0.2",
+]
 
 [tool.setuptools.packages.find]
 include = ["pipeline", "pipeline.*"]
