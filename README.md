@@ -1,6 +1,6 @@
 # GREC — Game Recommendation Engine
 
-GREC lets you search for a Steam game and get a ranked list of similar titles. Recommendations are driven by **content-based filtering** (tags, genres, and descriptions) combined with a Wilson score quality boost. Collaborative filtering is not supported yet.
+GREC lets you search for a Steam game and get a ranked list of similar titles. Recommendations are driven by **content-based filtering** (tags, genres, and descriptions) combined with a Wilson score quality boost. Future plans for the project include adding collaborative filtering.
 
 ## How it works
 
@@ -12,14 +12,25 @@ The `/notebooks` directory contains experimentation and analysis covering the da
 
 ## Running locally
 
-(coming soon)
+Requirements: [Docker](https://docs.docker.com/get-docker/)
 
-
-## Running tests
+**First time setup** — builds images, populates the database, then starts the app:
 
 ```bash
-pytest
+docker compose build
+docker compose run pipeline   # downloads data and populates the DB (takes a while)
+docker compose up
 ```
+
+The app will be available at [http://localhost](http://localhost).
+
+**Subsequent runs** — the database is persisted in a Docker volume, so just:
+
+```bash
+docker compose up
+```
+
+> **Re-running the pipeline** — only needed if you want to refresh the data. The pipeline image (`grec-pipeline`) can be removed after the initial setup to free disk space (~2 GB) without affecting the app.
 
 ## Tech stack
 
