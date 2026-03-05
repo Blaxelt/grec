@@ -360,7 +360,7 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'dev'", specifier = "==9.0.2" },
     { name = "python-dotenv", specifier = "==1.2.1" },
     { name = "scikit-learn", marker = "extra == 'pipeline'", specifier = "==1.8.0" },
-    { name = "sentence-transformers", marker = "extra == 'pipeline'" },
+    { name = "sentence-transformers", marker = "extra == 'pipeline'", specifier = "==5.2.3" },
     { name = "sqlmodel", specifier = "==0.0.33" },
 ]
 provides-extras = ["backend", "pipeline", "dev"]
