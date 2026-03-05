@@ -20,7 +20,18 @@ services:
     environment:
       - DATABASE_URL=postgresql://grec:grec@db:5432/grec
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
+  pipeline:
+    build:
+      context: .
+      dockerfile: pipeline/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://grec:grec@db:5432/grec
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     image: pgvector/pgvector:pg16
@@ -30,6 +41,11 @@ services:
       POSTGRES_DB: grec
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U grec -d grec
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
