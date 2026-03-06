@@ -32,6 +32,24 @@ docker compose up
 
 > **Re-running the pipeline** — only needed if you want to refresh the data. The pipeline image (`grec-pipeline`) can be removed after the initial setup to free disk space (~2 GB) without affecting the app.
 
+## Screenshots
+
+### Homepage
+
+![Homepage](./img/homepage.png)
+
+### Searching
+
+![Searching](./img/searching.png)
+
+### Results
+
+![Results](./img/results.png)
+
+### Game details
+
+![Game details](./img/game-details.png)
+
 ## Tech stack
 
 - **Feature store** — PostgreSQL + pgvector
