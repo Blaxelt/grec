@@ -20,7 +20,7 @@ export function SearchBox({ query, onQueryChange, suggestions, showSuggestions, 
             />
 
             {showSuggestions && suggestions.length > 0 && (
-                <ul className="suggestions">
+                <ul className="suggestions" data-testid="suggestions">
                     {suggestions.map((g) => (
                         <li key={g.game_name}>
                             <button onClick={() => onSelectGame(g.game_name)} className="suggestion-btn">

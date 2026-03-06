@@ -27,8 +27,9 @@ export function Filter({ topN, qualityPower, isOpen, onTopNChange, onQualityPowe
                 <h3>Filters</h3>
 
                 <div className="filter-field">
-                    <label>Number of recommendations</label>
+                    <label htmlFor="topn-slider">Number of recommendations</label>
                     <input
+                        id="topn-slider"
                         type="range"
                         min={1}
                         max={50}
@@ -40,8 +41,9 @@ export function Filter({ topN, qualityPower, isOpen, onTopNChange, onQualityPowe
                 </div>
 
                 <div className="filter-field">
-                    <label>Review Quality Weight</label>
+                    <label htmlFor="quality-slider">Review Quality Weight</label>
                     <input
+                        id="quality-slider"
                         type="range"
                         min={0}
                         max={5}
