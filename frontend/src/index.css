@@ -7,8 +7,8 @@
 }
 
 :root {
-  --bg: #0a0a0a;
-  --surface: #141414;
+  --bg: #1b1a1a;
+  --surface: #3f3c3c;
   --border: #222;
   --text: #e5e5e5;
   --text-dim: #888;
@@ -115,7 +115,7 @@ h1 {
 }
 
 .suggestions li:hover {
-  background: #1a1a2e;
+  background: var(--accent);
 }
 
 /* ── Filter Toggle Button ─────────────────────────────── */
@@ -139,7 +139,6 @@ h1 {
 .filter-toggle:hover {
   border-color: var(--accent);
   color: var(--accent);
-  background: #1a1a2e;
 }
 
 /* ── Filter Modal ─────────────────────────────────────── */
@@ -377,7 +376,6 @@ a.result-card:hover {
   font-size: 1.05rem;
   line-height: 1.6;
   color: var(--text);
-  opacity: 0.9;
 }
 
 .game-meta p {
