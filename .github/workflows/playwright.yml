@@ -49,12 +49,13 @@ jobs:
           done
 
       - name: Seed Database
-        run: cat db/seed.sql | docker compose exec -T db psql -U grec -d grec
+        run: cat db/seed.sql | docker compose exec -T db psql -v ON_ERROR_STOP=1 -U grec -d grec
 
       - name: Run Playwright tests
         working-directory: frontend
         env:
           DATABASE_URL: "postgresql://grec:grec@localhost:5432/grec"
+          VITE_API_URL: "http://localhost:8000"
         # The frontend playwright.config.ts automatically spins up the backend and frontend
         run: npx playwright test
 
