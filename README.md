@@ -14,9 +14,11 @@ The `/notebooks` directory contains experimentation and analysis covering the da
 
 Requirements: [Docker](https://docs.docker.com/get-docker/)
 
-**First time setup** — builds images, populates the database, then starts the app:
+**First time setup** — clones the repository, builds images, populates the database, then starts the app:
 
 ```bash
+git clone https://github.com/Blaxelt/grec.git
+cd grec
 docker compose build
 docker compose run pipeline   # downloads data and populates the DB (takes a while)
 docker compose up
@@ -57,3 +59,7 @@ docker compose up
 - **Backend** — FastAPI + SQLModel
 - **Frontend** — React + Vite + TanStack Query
 - **CI** — GitHub Actions
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
