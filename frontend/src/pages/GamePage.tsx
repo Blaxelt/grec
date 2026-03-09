@@ -10,8 +10,8 @@ export default function GamePage() {
         enabled: !!id,
     })
 
-    if (isLoading) return <p>Loading...</p>
-    if (isError || !game) return <p>Game not found.</p>
+    if (isLoading) return <p className="loading">Loading...</p>
+    if (isError || !game) return <p className="error">Game not found.</p>
 
     return (
         <div className="game-page">
