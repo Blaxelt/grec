@@ -1,20 +1,20 @@
-# GREC — Game Recommendation Engine
+# GREC - Game Recommendation Engine
 
 GREC lets you search for a Steam game and get a ranked list of similar titles. Recommendations are driven by **content-based filtering** (tags, genres, and descriptions) combined with a Wilson score quality boost. Future plans for the project include adding collaborative filtering.
 
 ## How it works
 
-1. **Pipeline** — downloads the [Steam Games Dataset](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset) from Kaggle, cleans the data, builds a composite feature vector per game, and stores everything in PostgreSQL via `pgvector`.
-2. **Backend** — a FastAPI app that serves game search, detail, and recommendation endpoints.
-3. **Frontend** — a React + Vite app where users search for a game and explore similar titles.
+1. **Pipeline** - downloads the [Steam Games Dataset](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset) from Kaggle, cleans the data, builds a composite feature vector per game, and stores everything in PostgreSQL via `pgvector`.
+2. **Backend** - a FastAPI app that serves game search, detail, and recommendation endpoints.
+3. **Frontend** - a React + Vite app where users search for a game and explore similar titles.
 
 The `/notebooks` directory contains experimentation and analysis covering the data cleaning and feature engineering decisions.
 
 ## Running locally
 
-Requirements: [Docker](https://docs.docker.com/get-docker/)
+Requirement: [Docker](https://docs.docker.com/get-docker/)
 
-**First time setup** — clones the repository, builds images, populates the database, then starts the app:
+**First time setup** - clone the repository, build images, populate the database, then start the app:
 
 ```bash
 git clone https://github.com/Blaxelt/grec.git
@@ -26,13 +26,13 @@ docker compose up
 
 The app will be available at [http://localhost](http://localhost).
 
-**Subsequent runs** — the database is persisted in a Docker volume, so just:
+**Subsequent runs** - the database is persisted in a Docker volume, so just:
 
 ```bash
 docker compose up
 ```
 
-> **Re-running the pipeline** — only needed if you want to refresh the data. The pipeline image (`grec-pipeline`) can be removed after the initial setup to free disk space (~2 GB) without affecting the app.
+> **Re-running the pipeline** - only needed if you want to refresh the data. The pipeline image (`grec-pipeline`) can be removed after the initial setup to free disk space (~2 GB) without affecting the app.
 
 ## Screenshots
 
@@ -54,11 +54,11 @@ docker compose up
 
 ## Tech stack
 
-- **Feature store** — PostgreSQL + pgvector
-- **Embeddings** — `sentence-transformers`
-- **Backend** — FastAPI + SQLModel
-- **Frontend** — React + Vite + TanStack Query
-- **CI** — GitHub Actions
+- **Feature store** - PostgreSQL + pgvector
+- **Embeddings** - `sentence-transformers`
+- **Backend** - FastAPI + SQLModel
+- **Frontend** - React + Vite + TanStack Query
+- **CI** - GitHub Actions
 
 ## License
 
