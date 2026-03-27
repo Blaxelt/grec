@@ -215,7 +215,7 @@ def save_features(
         with conn.cursor() as cur:
             cur.execute(
                 "CREATE TABLE IF NOT EXISTS games ("
-                "id BIGSERIAL PRIMARY KEY, "
+                "app_id bigint PRIMARY KEY, "
                 "game_name text, "
                 "header_image text, "
                 "short_description text, "
@@ -228,6 +228,7 @@ def save_features(
 
             data = [
                 (
+                    int(df.loc[i, 'app_id']),
                     df.loc[i, 'name'],
                     df.loc[i, 'header_image'],
                     df.loc[i, 'short_description'],
@@ -240,8 +241,8 @@ def save_features(
                 for i in range(len(combined_vectors))
             ]
             cur.executemany(
-                "INSERT INTO games (game_name, header_image, short_description, genres, tags, screenshots, combined_vector, wilson_score) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                "INSERT INTO games (app_id, game_name, header_image, short_description, genres, tags, screenshots, combined_vector, wilson_score) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 data,
             )
             conn.commit()

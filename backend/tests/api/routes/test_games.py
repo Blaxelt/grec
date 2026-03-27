@@ -10,7 +10,7 @@ client = TestClient(app)
 def make_game(**kwargs) -> Game:
     """Build a Game instance for use in tests."""
     defaults = dict(
-        id=1,
+        app_id=1,
         game_name="Test Game",
         header_image="https://example.com/img.jpg",
         short_description="A great game.",
@@ -78,18 +78,18 @@ def test_search_limit_below_min_returns_422():
 
 
 # ---------------------------------------------------------------------------
-# GET /games/{game_id}
+# GET /games/{app_id}
 # ---------------------------------------------------------------------------
 
 def test_get_game_returns_detail():
-    game = make_game(id=42, game_name="Space Explorer")
+    game = make_game(app_id=42, game_name="Space Explorer")
     app.dependency_overrides[deps.get_session] = lambda: mock_session(game=game)
     response = client.get("/games/42")
     app.dependency_overrides.clear()
 
     assert response.status_code == 200
     data = response.json()
-    assert data["id"] == 42
+    assert data["app_id"] == 42
     assert data["game_name"] == "Space Explorer"
     assert data["genres"] == ["Action", "RPG"]
     assert data["tags"] == ["Singleplayer", "Open World"]
@@ -112,7 +112,7 @@ def test_get_game_non_integer_id_returns_422():
 
 
 def test_get_game_header_image_fallback_to_empty_string():
-    game = make_game(id=7, header_image=None)
+    game = make_game(app_id=7, header_image=None)
     app.dependency_overrides[deps.get_session] = lambda: mock_session(game=game)
     response = client.get("/games/7")
     app.dependency_overrides.clear()
@@ -122,7 +122,7 @@ def test_get_game_header_image_fallback_to_empty_string():
 
 
 def test_get_game_screenshots_fallback_to_empty_list():
-    game = make_game(id=8, screenshots=None)
+    game = make_game(app_id=8, screenshots=None)
     app.dependency_overrides[deps.get_session] = lambda: mock_session(game=game)
     response = client.get("/games/8")
     app.dependency_overrides.clear()

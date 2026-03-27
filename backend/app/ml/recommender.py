@@ -39,14 +39,14 @@ class GameRecommender:
 
         stmt = (
             select(
-                Game.id,
+                Game.app_id,
                 Game.game_name,
                 Game.header_image,
                 similarity.label("similarity"),
                 Game.wilson_score,
                 hybrid_score.label("hybrid_score"),
             )
-            .where(Game.id != game.id)
+            .where(Game.app_id != game.app_id)
             .order_by(hybrid_score.desc())
             .limit(top_n)
         )
@@ -54,14 +54,14 @@ class GameRecommender:
 
         recommendations = [
             GameRecommendation(
-                id=game_id,
+                app_id=app_id,
                 game_name=name,
                 header_image=header_img,
                 similarity=round(sim, 4),
                 wilson_score=round(wilson, 4),
                 hybrid_score=round(hybrid, 4),
             )
-            for game_id, name, header_img, sim, wilson, hybrid in results
+            for app_id, name, header_img, sim, wilson, hybrid in results
         ]
 
         return game.game_name, recommendations

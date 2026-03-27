@@ -7,13 +7,13 @@ export type ClientOptions = {
 /**
  * GameDetail
  *
- * Full game detail for /games/{id}.
+ * Full game detail for /games/{app_id}.
  */
 export type GameDetail = {
     /**
-     * Id
+     * App Id
      */
-    id: number;
+    app_id: number;
     /**
      * Game Name
      */
@@ -21,7 +21,7 @@ export type GameDetail = {
     /**
      * Header Image
      */
-    header_image: string;
+    header_image: string | null;
     /**
      * Short Description
      */
@@ -37,7 +37,7 @@ export type GameDetail = {
     /**
      * Screenshots
      */
-    screenshots: Array<string>;
+    screenshots: Array<string> | null;
     /**
      * Wilson Score
      */
@@ -51,9 +51,9 @@ export type GameDetail = {
  */
 export type GameRecommendation = {
     /**
-     * Id
+     * App Id
      */
-    id: number;
+    app_id: number;
     /**
      * Game Name
      */
@@ -61,7 +61,7 @@ export type GameRecommendation = {
     /**
      * Header Image
      */
-    header_image: string;
+    header_image: string | null;
     /**
      * Similarity
      */
@@ -180,35 +180,35 @@ export type SearchGamesGamesSearchGetResponses = {
 
 export type SearchGamesGamesSearchGetResponse = SearchGamesGamesSearchGetResponses[keyof SearchGamesGamesSearchGetResponses];
 
-export type GetGameGamesGameIdGetData = {
+export type GetGameGamesAppIdGetData = {
     body?: never;
     path: {
         /**
-         * Game Id
+         * App Id
          */
-        game_id: number;
+        app_id: number;
     };
     query?: never;
-    url: '/games/{game_id}';
+    url: '/games/{app_id}';
 };
 
-export type GetGameGamesGameIdGetErrors = {
+export type GetGameGamesAppIdGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type GetGameGamesGameIdGetError = GetGameGamesGameIdGetErrors[keyof GetGameGamesGameIdGetErrors];
+export type GetGameGamesAppIdGetError = GetGameGamesAppIdGetErrors[keyof GetGameGamesAppIdGetErrors];
 
-export type GetGameGamesGameIdGetResponses = {
+export type GetGameGamesAppIdGetResponses = {
     /**
      * Successful Response
      */
     200: GameDetail;
 };
 
-export type GetGameGamesGameIdGetResponse = GetGameGamesGameIdGetResponses[keyof GetGameGamesGameIdGetResponses];
+export type GetGameGamesAppIdGetResponse = GetGameGamesAppIdGetResponses[keyof GetGameGamesAppIdGetResponses];
 
 export type GetRecommendationsRecommendGetData = {
     body?: never;

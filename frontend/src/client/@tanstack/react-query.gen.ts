@@ -3,8 +3,8 @@
 import { queryOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { getGameGamesGameIdGet, getRecommendationsRecommendGet, type Options, searchGamesGamesSearchGet } from '../sdk.gen';
-import type { GetGameGamesGameIdGetData, GetGameGamesGameIdGetError, GetGameGamesGameIdGetResponse, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetError, GetRecommendationsRecommendGetResponse, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetError, SearchGamesGamesSearchGetResponse } from '../types.gen';
+import { getGameGamesAppIdGet, getRecommendationsRecommendGet, type Options, searchGamesGamesSearchGet } from '../sdk.gen';
+import type { GetGameGamesAppIdGetData, GetGameGamesAppIdGetError, GetGameGamesAppIdGetResponse, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetError, GetRecommendationsRecommendGetResponse, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetError, SearchGamesGamesSearchGetResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -59,16 +59,16 @@ export const searchGamesGamesSearchGetOptions = (options: Options<SearchGamesGam
     queryKey: searchGamesGamesSearchGetQueryKey(options)
 });
 
-export const getGameGamesGameIdGetQueryKey = (options: Options<GetGameGamesGameIdGetData>) => createQueryKey('getGameGamesGameIdGet', options);
+export const getGameGamesAppIdGetQueryKey = (options: Options<GetGameGamesAppIdGetData>) => createQueryKey('getGameGamesAppIdGet', options);
 
 /**
  * Get Game
  *
  * Get full details for a single game.
  */
-export const getGameGamesGameIdGetOptions = (options: Options<GetGameGamesGameIdGetData>) => queryOptions<GetGameGamesGameIdGetResponse, GetGameGamesGameIdGetError, GetGameGamesGameIdGetResponse, ReturnType<typeof getGameGamesGameIdGetQueryKey>>({
+export const getGameGamesAppIdGetOptions = (options: Options<GetGameGamesAppIdGetData>) => queryOptions<GetGameGamesAppIdGetResponse, GetGameGamesAppIdGetError, GetGameGamesAppIdGetResponse, ReturnType<typeof getGameGamesAppIdGetQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getGameGamesGameIdGet({
+        const { data } = await getGameGamesAppIdGet({
             ...options,
             ...queryKey[0],
             signal,
@@ -76,7 +76,7 @@ export const getGameGamesGameIdGetOptions = (options: Options<GetGameGamesGameId
         });
         return data;
     },
-    queryKey: getGameGamesGameIdGetQueryKey(options)
+    queryKey: getGameGamesAppIdGetQueryKey(options)
 });
 
 export const getRecommendationsRecommendGetQueryKey = (options: Options<GetRecommendationsRecommendGetData>) => createQueryKey('getRecommendationsRecommendGet', options);

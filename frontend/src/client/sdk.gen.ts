@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetGameGamesGameIdGetData, GetGameGamesGameIdGetErrors, GetGameGamesGameIdGetResponses, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetErrors, GetRecommendationsRecommendGetResponses, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetErrors, SearchGamesGamesSearchGetResponses } from './types.gen';
+import type { GetGameGamesAppIdGetData, GetGameGamesAppIdGetErrors, GetGameGamesAppIdGetResponses, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetErrors, GetRecommendationsRecommendGetResponses, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetErrors, SearchGamesGamesSearchGetResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -30,7 +30,7 @@ export const searchGamesGamesSearchGet = <ThrowOnError extends boolean = false>(
  *
  * Get full details for a single game.
  */
-export const getGameGamesGameIdGet = <ThrowOnError extends boolean = false>(options: Options<GetGameGamesGameIdGetData, ThrowOnError>) => (options.client ?? client).get<GetGameGamesGameIdGetResponses, GetGameGamesGameIdGetErrors, ThrowOnError>({ url: '/games/{game_id}', ...options });
+export const getGameGamesAppIdGet = <ThrowOnError extends boolean = false>(options: Options<GetGameGamesAppIdGetData, ThrowOnError>) => (options.client ?? client).get<GetGameGamesAppIdGetResponses, GetGameGamesAppIdGetErrors, ThrowOnError>({ url: '/games/{app_id}', ...options });
 
 /**
  * Get Recommendations

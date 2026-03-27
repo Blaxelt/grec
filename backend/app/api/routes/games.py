@@ -18,15 +18,15 @@ def search_games(
     return [GameSearchResult(game_name=name) for name in rows]
 
 
-@router.get("/{game_id}", response_model=GameDetail)
-def get_game(session: SessionDep, game_id: int):
+@router.get("/{app_id}", response_model=GameDetail)
+def get_game(session: SessionDep, app_id: int):
     """Get full details for a single game."""
-    game = session.get(Game, game_id)
+    game = session.get(Game, app_id)
     if not game:
         raise HTTPException(status_code=404, detail="Game not found")
 
     return GameDetail(
-        id=game.id,
+        app_id=game.app_id,
         game_name=game.game_name,
         header_image=game.header_image or "",
         short_description=game.short_description,

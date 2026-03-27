@@ -8,7 +8,7 @@ class Game(SQLModel, table=True):
 
     __tablename__ = "games"
 
-    id: int | None = Field(default=None, primary_key=True)
+    app_id: int = Field(primary_key=True)
     game_name: str
     header_image: str | None
     short_description: str
@@ -26,9 +26,9 @@ class GameSearchResult(SQLModel):
 
 
 class GameDetail(SQLModel):
-    """Full game detail for /games/{id}."""
+    """Full game detail for /games/{app_id}."""
 
-    id: int
+    app_id: int
     game_name: str
     header_image: str | None
     short_description: str
@@ -41,7 +41,7 @@ class GameDetail(SQLModel):
 class GameRecommendation(SQLModel):
     """A single recommended game."""
 
-    id: int
+    app_id: int
     game_name: str
     header_image: str | None
     similarity: float

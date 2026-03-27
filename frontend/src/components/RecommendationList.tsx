@@ -19,9 +19,9 @@ export function RecommendationList({ isLoading, isError, data }: Props) {
             <h2>Games similar to {data.target_game}</h2>
             <div className="results-list" data-testid="results-list">
                 {data.recommendations.map((rec) => (
-                    <Link key={rec.id} to={`/games/${rec.id}`} className="result-card">
+                    <Link key={rec.app_id} to={`/games/${rec.app_id}`} className="result-card">
                         <img
-                            src={rec.header_image}
+                            src={rec.header_image ?? undefined}
                             alt={rec.game_name}
                             className="result-image"
                         />
