@@ -317,11 +317,13 @@ dependencies = [
 [package.optional-dependencies]
 backend = [
     { name = "fastapi", extra = ["standard"] },
+    { name = "implicit" },
 ]
 dev = [
     { name = "pytest" },
 ]
 pipeline = [
+    { name = "implicit" },
     { name = "kagglehub" },
     { name = "numpy" },
     { name = "pandas" },
@@ -334,6 +336,8 @@ pipeline = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], marker = "extra == 'backend'", specifier = "==0.129.0" },
+    { name = "implicit", marker = "extra == 'backend'", specifier = "==0.7.2" },
+    { name = "implicit", marker = "extra == 'pipeline'", specifier = "==0.7.2" },
     { name = "kagglehub", marker = "extra == 'pipeline'", specifier = "==0.4.3" },
     { name = "numpy", marker = "extra == 'pipeline'", specifier = "==2.4.1" },
     { name = "pandas", marker = "extra == 'pipeline'", specifier = "==2.3.3" },
@@ -513,6 +517,18 @@ sdist = { url = "https://files.pythonhosted.org/packages/6f/6d/0703ccc57f3a72335
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0e/61/66938bbb5fc52dbdf84594873d5b51fb1f7c7794e9c0f5bd885f30bc507b/idna-3.11-py3-none-any.whl", hash = "sha256:771a87f49d9defaf64091e6e6fe9c18d4833f140bd19464795bc32d966ca37ea", size = 71008, upload-time = "2025-10-12T14:55:18.883Z" },
 ]
+
+[[package]]
+name = "implicit"
+version = "0.7.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "scipy" },
+    { name = "threadpoolctl" },
+    { name = "tqdm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2e/1c/b3154f16fec6ebc9bc118ad4fbadc960a656d6a55eae2e6f3f9dd08409e6/implicit-0.7.2.tar.gz", hash = "sha256:bacf79120c87ad0744a4365a089409fddd33231880aef4a495bab2d4f888291d", size = 70298, upload-time = "2023-09-29T21:08:24.734Z" }
 
 [[package]]
 name = "iniconfig"

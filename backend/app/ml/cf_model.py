@@ -4,7 +4,7 @@ from pathlib import Path
 
 import numpy as np
 from scipy import sparse
-from implicit.als import AlternatingLeastSquares
+from implicit.cpu.als import AlternatingLeastSquares
 
 logger = logging.getLogger(__name__)
 
@@ -45,12 +45,13 @@ class CFModel:
         app_id: int,
         hours_played: float,
         top_n: int,
-    ) -> list[int]:
+    ) -> list[tuple[int, float]]:
         """
-        Return a list of recommended app_ids for a user who played `app_id`
-        for `hours_played` hours, using ALS with recalculate_user=True.
-        Returns an empty list if the model is unavailable or the game is not
-        in the CF index.
+        Return a list of (app_id, score) tuples for a user who played
+        `app_id` for `hours_played` hours, using ALS with
+        recalculate_user=True.
+        Returns an empty list if the model is unavailable or the game is
+        not in the CF index.
         """
         if not self.available:
             return []
@@ -71,7 +72,7 @@ class CFModel:
             shape=(1, n_items),
         )
 
-        rec_indices, _ = self._model.recommend(
+        rec_indices, rec_scores = self._model.recommend(
             userid=0,
             user_items=user_item,
             N=top_n,
@@ -79,4 +80,7 @@ class CFModel:
             recalculate_user=True,
         )
 
-        return [self._idx_to_item_id[str(idx)] for idx in rec_indices]
+        return [
+            (self._idx_to_item_id[str(idx)], float(score))
+            for idx, score in zip(rec_indices, rec_scores)
+        ]
