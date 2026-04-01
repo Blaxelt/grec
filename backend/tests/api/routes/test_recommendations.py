@@ -8,8 +8,8 @@ from app.models import GameRecommendation
 client = TestClient(app)
 
 FAKE_RECOMMENDATIONS = [
-    GameRecommendation(app_id=1, game_name="Dark Souls 1", header_image="https://example.com/img1.jpg", similarity=0.9, wilson_score=0.8, hybrid_score=0.72),
-    GameRecommendation(app_id=2, game_name="Dark Souls 2", header_image="https://example.com/img2.jpg", similarity=0.8, wilson_score=0.7, hybrid_score=0.56),
+    GameRecommendation(app_id=1, game_name="Dark Souls 1", header_image="https://example.com/img1.jpg", hybrid_score=0.72),
+    GameRecommendation(app_id=2, game_name="Dark Souls 2", header_image="https://example.com/img2.jpg", hybrid_score=0.56),
 ]
 
 MOCK_TARGET = "Elden Ring"

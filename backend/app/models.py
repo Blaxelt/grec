@@ -44,8 +44,6 @@ class GameRecommendation(SQLModel):
     app_id: int
     game_name: str
     header_image: str | None
-    similarity: float
-    wilson_score: float
     hybrid_score: float
 
 class RecommendationResponse(SQLModel):

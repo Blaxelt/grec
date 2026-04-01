@@ -63,14 +63,6 @@ export type GameRecommendation = {
      */
     header_image: string | null;
     /**
-     * Similarity
-     */
-    similarity: number;
-    /**
-     * Wilson Score
-     */
-    wilson_score: number;
-    /**
      * Hybrid Score
      */
     hybrid_score: number;

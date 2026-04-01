@@ -90,22 +90,21 @@ class GameRecommender:
         cf_range  = cf_max  - cf_min  if cf_max  != cf_min  else 1.0
 
         cbf_w = 1.0 - cf_weight
-        scored: list[tuple[int, float, float, float]] = []
+        scored: list[tuple[int, float]] = []
         for aid, cbf_raw, cf_raw in raw:
             norm_cbf = (cbf_raw - cbf_min) / cbf_range
             norm_cf  = (cf_raw  - cf_min)  / cf_range
             hybrid   = cbf_w * norm_cbf + cf_weight * norm_cf
-            scored.append((aid, norm_cbf, norm_cf, hybrid))
+            scored.append((aid, hybrid))
 
         # Rank and pick final top-N
-        scored.sort(key=lambda x: x[3], reverse=True)
+        scored.sort(key=lambda x: x[1], reverse=True)
         top_ids = [s[0] for s in scored[:top_n]]
         score_map = {s[0]: s for s in scored[:top_n]}
 
         # Fetch metadata for the final set
         meta_stmt = select(
             Game.app_id, Game.game_name, Game.header_image,
-            Game.wilson_score,
         ).where(Game.app_id.in_(top_ids))  # type: ignore[union-attr]
 
         meta_rows = {r.app_id: r for r in session.exec(meta_stmt).all()}
@@ -115,14 +114,12 @@ class GameRecommender:
             meta = meta_rows.get(aid)
             if meta is None:
                 continue
-            _, norm_cbf, _, hybrid = score_map[aid]
+            _, hybrid = score_map[aid]
             recommendations.append(
                 GameRecommendation(
                     app_id=aid,
                     game_name=meta.game_name,
                     header_image=meta.header_image,
-                    similarity=round(norm_cbf, 4),
-                    wilson_score=round(meta.wilson_score, 4),
                     hybrid_score=round(hybrid, 4),
                 )
             )

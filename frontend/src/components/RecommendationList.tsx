@@ -27,9 +27,6 @@ export function RecommendationList({ isLoading, isError, data }: Props) {
                         />
                         <div className="result-info">
                             <span className="game-name">{rec.game_name}</span>
-                            <span className="scores">
-                                similarity {(rec.similarity * 100).toFixed(1)}% · quality {(rec.wilson_score * 100).toFixed(1)}%
-                            </span>
                         </div>
                         <span className="hybrid">{(rec.hybrid_score * 100).toFixed(1)}%</span>
                     </Link>
