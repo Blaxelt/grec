@@ -42,6 +42,10 @@ export type GameDetail = {
      * Wilson Score
      */
     wilson_score: number;
+    /**
+     * Other Players Also Played
+     */
+    other_players_also_played: Array<GameRecommendation> | null;
 };
 
 /**

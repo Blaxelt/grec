@@ -10,7 +10,7 @@ test.describe('Gamepage', () => {
   });
 
   test('has correct game name', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /dark souls/i })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: /dark souls/i })).toBeVisible();
   });
 
   test('has game description', async ({ page }) => {

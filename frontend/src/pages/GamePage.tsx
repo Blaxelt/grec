@@ -48,6 +48,23 @@ export default function GamePage() {
                     </div>
                 </div>
             )}
+
+            {(game.other_players_also_played ?? []).length > 0 && (
+                <div className="screenshots-section">
+                    <h2>Other players also played</h2>
+                    <div className="screenshots-grid">
+                        {(game.other_players_also_played ?? []).map((rec, i) => (
+                            <img
+                                key={i}
+                                className="screenshot-img"
+                                src={rec.header_image ?? undefined}
+                                alt={`${rec.game_name} no available`}
+                                loading="lazy"
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
