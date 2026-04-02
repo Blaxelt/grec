@@ -1,10 +1,10 @@
 # GREC - Game Recommendation Engine
 
-GREC lets you search for a Steam game and get a ranked list of similar titles. Recommendations are driven by **content-based filtering** (tags, genres, and descriptions) combined with a Wilson score quality boost. Future plans for the project include adding collaborative filtering.
+GREC lets you search for a Steam game and get a ranked list of similar titles. Recommendations are driven by a hybrid engine combining **content-based filtering** (tags, genres, and descriptions), a Wilson score quality boost, and **collaborative filtering** using Alternating Least Squares (ALS).
 
 ## How it works
 
-1. **Pipeline** - downloads the [Steam Games Dataset](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset) from Kaggle, cleans the data, builds a composite feature vector per game, and stores everything in PostgreSQL via `pgvector`.
+1. **Pipeline** - downloads the [Steam Games Dataset](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset) from Kaggle, cleans the data, builds a composite feature vector per game, and stores everything in PostgreSQL via `pgvector`. Trains the ALS model on the [Game Recommendations on Steam Dataset](https://www.kaggle.com/datasets/antonkozyriev/game-recommendations-on-steam).
 2. **Backend** - a FastAPI app that serves game search, detail, and recommendation endpoints.
 3. **Frontend** - a React + Vite app where users search for a game and explore similar titles.
 
@@ -56,6 +56,7 @@ docker compose up
 
 - **Feature store** - PostgreSQL + pgvector
 - **Embeddings** - `sentence-transformers`
+- **Collaborative filtering** - `implicit`
 - **Backend** - FastAPI + SQLModel
 - **Frontend** - React + Vite + TanStack Query
 - **CI** - GitHub Actions
