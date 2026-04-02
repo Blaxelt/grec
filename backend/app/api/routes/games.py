@@ -2,9 +2,13 @@ from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select
 
 from app.api.deps import SessionDep
-from app.models import Game, GameDetail, GameSearchResult
+from app.models import Game, GameDetail, GameSearchResult, GameRecommendation
+
+from app.ml.cf_model import CFModel
 
 router = APIRouter(prefix="/games", tags=["games"])
+
+cf_model = CFModel()
 
 @router.get("/search", response_model=list[GameSearchResult])
 def search_games(
@@ -25,6 +29,22 @@ def get_game(session: SessionDep, app_id: int):
     if not game:
         raise HTTPException(status_code=404, detail="Game not found")
 
+    cf_results = cf_model.recommend(app_id, 20, 10)
+
+    rec_app_ids = [rec_id for rec_id, _ in cf_results]
+    rec_games = session.exec(select(Game).where(Game.app_id.in_(rec_app_ids))).all()
+    scores = {rec_id: score for rec_id, score in cf_results}
+
+    other_games_recommendations = [
+        GameRecommendation(
+            app_id=g.app_id,
+            game_name=g.game_name,
+            header_image=g.header_image,
+            hybrid_score=scores[g.app_id],
+        )
+        for g in rec_games
+    ]
+
     return GameDetail(
         app_id=game.app_id,
         game_name=game.game_name,
@@ -34,4 +54,5 @@ def get_game(session: SessionDep, app_id: int):
         tags=game.tags,
         screenshots=game.screenshots or [],
         wilson_score=game.wilson_score,
+        other_players_also_played=other_games_recommendations,
     )

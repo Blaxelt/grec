@@ -18,12 +18,18 @@ class Game(SQLModel, table=True):
     combined_vector: list[float] = Field(sa_column=Column(Vector(860)))
     wilson_score: float 
 
-
 class GameSearchResult(SQLModel):
     """Search result."""
 
     game_name: str
 
+class GameRecommendation(SQLModel):
+    """A single recommended game."""
+
+    app_id: int
+    game_name: str
+    header_image: str | None
+    hybrid_score: float
 
 class GameDetail(SQLModel):
     """Full game detail for /games/{app_id}."""
@@ -36,15 +42,7 @@ class GameDetail(SQLModel):
     tags: list[str]
     screenshots: list[str] | None
     wilson_score: float
-
-
-class GameRecommendation(SQLModel):
-    """A single recommended game."""
-
-    app_id: int
-    game_name: str
-    header_image: str | None
-    hybrid_score: float
+    other_players_also_played: list[GameRecommendation] | None
 
 class RecommendationResponse(SQLModel):
     """Response wrapper for the /recommend endpoint."""
