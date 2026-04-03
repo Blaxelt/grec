@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { getGameGamesAppIdGetOptions } from '../client/@tanstack/react-query.gen'
 import { useQuery } from '@tanstack/react-query'
+import { Link } from 'react-router-dom'
 
 export default function GamePage() {
     const { id } = useParams<{ id: string }>()
@@ -54,13 +55,15 @@ export default function GamePage() {
                     <h2>Other players also played</h2>
                     <div className="screenshots-grid">
                         {(game.other_players_also_played ?? []).map((rec, i) => (
-                            <img
-                                key={i}
-                                className="screenshot-img"
-                                src={rec.header_image ?? undefined}
-                                alt={`${rec.game_name} no available`}
-                                loading="lazy"
-                            />
+                            <Link key={rec.app_id} to={`/games/${rec.app_id}`}>
+                                <img
+                                    key={i}
+                                    className="screenshot-img"
+                                    src={rec.header_image ?? undefined}
+                                    alt={`${rec.game_name} no available`}
+                                    loading="lazy"
+                                />
+                            </Link>
                         ))}
                     </div>
                 </div>
