@@ -20,8 +20,21 @@ test.describe('Gamepage', () => {
   test('has game genres', async ({ page }) => {
     await expect(page.getByText(/Genres:/)).toBeVisible();
   });
+
   test('has game tags', async ({ page }) => {
     await expect(page.getByText(/Tags:/)).toBeVisible();
+  });
+
+  test('has screenshots section', async ({ page }) => {
+    await expect(page.getByRole('heading', { level: 2, name: 'Screenshots' })).toBeVisible();
+  });
+
+  test('has other players also played section', async ({ page }) => {
+    const section = page.getByRole('heading', { name: 'Other players also played' });
+
+    const playerLinks = page.locator('div').filter({ has: section }).getByRole('link');
+
+    await playerLinks.first().click();
   });
 
   test('shows error for invalid game', async ({ page }) => {
