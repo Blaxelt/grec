@@ -1,8 +1,6 @@
 
 import numpy as np
 import pandas as pd
-from pathlib import Path
-from typing import Union
 import psycopg
 from pgvector.psycopg import register_vector
 import os
