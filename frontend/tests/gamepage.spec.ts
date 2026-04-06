@@ -30,11 +30,36 @@ test.describe('Gamepage', () => {
   });
 
   test('has other players also played section', async ({ page }) => {
-    const section = page.getByRole('heading', { name: 'Other players also played' });
+    await page.route('*/**/games/570940', async route => {
+      const request = route.request();
 
+      // Only intercept API/fetch requests, not page navigation
+      if (request.resourceType() !== 'fetch' && request.resourceType() !== 'xhr') {
+        await route.continue();
+        return;
+      }
+
+      const response = await route.fetch();
+      const json = await response.json();
+
+      json.other_players_also_played = [{
+        app_id: 123456,
+        game_name: 'Mocked Recommendation Game',
+        header_image: '',
+        hybrid_score: 0.99
+      }];
+
+      await route.fulfill({ json });
+    });
+
+    await page.goto('/games/570940');
+
+    const section = page.getByRole('heading', { name: 'Other players also played' });
     const playerLinks = page.locator('div').filter({ has: section }).getByRole('link');
 
+    await expect(playerLinks.first()).toBeVisible();
     await playerLinks.first().click();
+    await expect(page).toHaveURL('/games/123456');
   });
 
   test('shows error for invalid game', async ({ page }) => {
