@@ -40,7 +40,7 @@ export default function HomePage() {
     return (
         <div className="container">
             <h1 className='title'>GREC</h1>
-            <p className="subtitle"><br />Game Recommendation Engine (Similarity Based Content)</p>
+            <p className="subtitle"><br />Game Recommendation Engine</p>
 
             <div className="search-row">
                 <SearchBox
