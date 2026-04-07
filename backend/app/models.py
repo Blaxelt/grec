@@ -2,6 +2,7 @@ from pgvector.sqlalchemy import Vector
 from sqlalchemy import Column, Text
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlmodel import Field, SQLModel
+from pydantic import conlist, confloat, conint
 
 class Game(SQLModel, table=True):
     """Maps to the existing 'games' table created by the pipeline."""
@@ -48,4 +49,16 @@ class RecommendationResponse(SQLModel):
     """Response wrapper for the /recommend endpoint."""
 
     target_game: str
+    recommendations: list[GameRecommendation]
+
+class ProfileRequest(SQLModel):
+    """Request body for the /recommend/profile endpoint."""
+
+    app_ids: conlist(int, min_length=1, max_length=100)
+    hours_played: conlist(confloat(ge=0), min_length=1, max_length=100)
+    top_n: conint(gt=0, le=100)
+
+class ProfileRecommendationResponse(SQLModel):
+    """Response wrapper for the /recommend/profile endpoint."""
+
     recommendations: list[GameRecommendation]
