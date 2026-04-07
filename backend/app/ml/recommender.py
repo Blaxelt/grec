@@ -63,7 +63,7 @@ class GameRecommender:
         cbf_scores: dict[int, float] = {row.app_id: float(row.cbf_score) for row in cbf_rows}
 
         # CF top-K
-        cf_results = self._cf.recommend(game.app_id, hours_played, top_n=fetch_k)
+        cf_results = self._cf.recommend([game.app_id], [hours_played], top_n=fetch_k)
         cf_scores: dict[int, float] = {
             app_id: score for app_id, score in cf_results
         }

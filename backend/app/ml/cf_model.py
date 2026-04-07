@@ -42,16 +42,16 @@ class CFModel:
 
     def recommend(
         self,
-        app_id: int,
-        hours_played: float,
+        app_ids: list[int],
+        hours_played: list[float],
         top_n: int,
     ) -> list[tuple[int, float]]:
         """
         Return a list of (app_id, score) tuples for a user who played
-        `app_id` for `hours_played` hours, using ALS with
+        n games in `app_ids` for `hours_played` hours, using ALS with
         recalculate_user=True.
-        Returns an empty list if the model is unavailable or the game is
-        not in the CF index.
+        Returns an empty list if the model is unavailable or if all the games
+        are not in the CF index.
         """
         if not self.available:
             return []
@@ -59,16 +59,19 @@ class CFModel:
         if self._model is None:
             self._load()
 
-        item_idx = self._item_id_to_idx.get(str(app_id))
-        if item_idx is None:
-            logger.debug("app_id %s not in CF index - skipping CF.", app_id)
-            return []
+        item_indeces = []
+        for app_id in app_ids:
+            item_idx = self._item_id_to_idx.get(str(app_id))
+            if item_idx is None:
+                logger.debug("app_id %s not in CF index - skipping CF.", app_id)
+                return []
+            item_indeces.append(item_idx)
         
         n_items = len(self._item_id_to_idx)
-        hours_log = np.log1p(min(hours_played, self._hours_p99))
-        confidence = float(1 + self._alpha * hours_log)
+        hours_log = [np.log1p(min(h, self._hours_p99)) for h in hours_played]
+        confidence = [1 + self._alpha * h for h in hours_log]
         user_item = sparse.csr_matrix(
-            ([confidence], ([0], [item_idx])),
+            (confidence, ([0]*len(item_indeces), item_indeces)),
             shape=(1, n_items),
         )
 

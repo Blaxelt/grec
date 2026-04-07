@@ -29,7 +29,7 @@ def get_game(session: SessionDep, app_id: int):
     if not game:
         raise HTTPException(status_code=404, detail="Game not found")
 
-    cf_results = cf_model.recommend(app_id, 20, 10)
+    cf_results = cf_model.recommend([app_id], [20], 10)
 
     rec_app_ids = [rec_id for rec_id, _ in cf_results]
     rec_games = session.exec(select(Game).where(Game.app_id.in_(rec_app_ids))).all()
