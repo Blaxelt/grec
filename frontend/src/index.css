@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import "tailwindcss";
 
 * {
   margin: 0;
@@ -114,7 +115,7 @@ h1 {
   padding: 0;
 }
 
-.suggestions li:hover {   
+.suggestions li:hover {
   background: var(--accent);
 }
 
