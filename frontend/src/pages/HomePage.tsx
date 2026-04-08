@@ -38,11 +38,11 @@ export default function HomePage() {
     }
 
     return (
-        <div className="container">
-            <h1 className='title'>GREC</h1>
-            <p className="subtitle"><br />Game Recommendation Engine</p>
+        <div className="flex flex-col items-center h-screen pt-20">
+            <h1 className='font-press text-8xl tracking-wider'>GREC</h1>
+            <p className="pt-5 mb-10 tracking-normal">Game Recommendation System</p>
 
-            <div className="search-row">
+            <div className="flex items-center gap-2 w-full max-w-2xl">
                 <SearchBox
                     query={query}
                     onQueryChange={setQuery}
@@ -50,7 +50,8 @@ export default function HomePage() {
                     showSuggestions={query !== selectedGame}
                     onSelectGame={selectGame}
                 />
-                <button className="filter-toggle" onClick={() => setIsFilterOpen(true)} title="Filters">
+                <button className="w-12 h-11.5 bg-surface border border-border rounded-lg hover:border-accent cursor-pointer
+                hover:text-accent shrink-0 flex items-center justify-center" onClick={() => setIsFilterOpen(true)} title="Filters">
                     ⚙
                 </button>
             </div>

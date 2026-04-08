@@ -23,29 +23,6 @@
   --accent: #646cff;
 }
 
-/* ── Filter Toggle Button ─────────────────────────────── */
-
-.filter-toggle {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--surface);
-  color: var(--text-dim);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  font-size: 1.25rem;
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
-  flex-shrink: 0;
-}
-
-.filter-toggle:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
 /* ── Filter Modal ─────────────────────────────────────── */
 
 .filter-overlay {
