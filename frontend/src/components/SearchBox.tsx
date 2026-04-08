@@ -10,20 +10,22 @@ type Props = {
 
 export function SearchBox({ query, onQueryChange, suggestions, showSuggestions, onSelectGame }: Props) {
     return (
-        <div className="search-wrapper">
+        <div className="relative w-full">
             <input
                 type="text"
                 placeholder="Search for a game..."
                 value={query}
                 onChange={(e) => onQueryChange(e.target.value)}
-                className="search-input"
+                className="bg-surface w-full border border-border rounded-lg p-2.5 outline-none focus:border-accent hover:border-accent
+                placeholder:text-text-dim"
             />
 
             {showSuggestions && suggestions.length > 0 && (
-                <ul className="suggestions" data-testid="suggestions">
+                <ul className="absolute left-0 right-0 top-[calc(100%+4px)] bg-surface border border-border rounded-lg z-10 overflow-hidden"
+                    data-testid="suggestions">
                     {suggestions.map((g) => (
                         <li key={g.game_name}>
-                            <button onClick={() => onSelectGame(g.game_name)} className="suggestion-btn">
+                            <button onClick={() => onSelectGame(g.game_name)} className="cursor-pointer w-full text-left hover:bg-accent p-2.5">
                                 {g.game_name}
                             </button>
                         </li>

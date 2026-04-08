@@ -1,10 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@theme {
+  --font-sans: "Inter", system-ui;
+  --font-press: "Press Start 2P", system-ui;
+
+  --color-bg: #1b1a1a;
+  --color-surface: #3f3c3c;
+  --color-border: #222;
+  --color-text: #e5e5e5;
+  --color-text-dim: #888;
+  --color-accent: #646cff;
 }
 
 :root {
@@ -14,109 +21,6 @@
   --text: #e5e5e5;
   --text-dim: #888;
   --accent: #646cff;
-}
-
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-}
-
-.container {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 80px 20px 40px;
-}
-
-.title {
-  text-align: center;
-  font-family: 'Press Start 2P', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  font-size: 4rem;
-}
-
-h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.subtitle {
-  color: var(--text-dim);
-  margin-bottom: 40px;
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-/* ── Search ────────────────────────────────────────────── */
-
-.search-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.search-wrapper {
-  position: relative;
-  flex: 1;
-}
-
-.search-input {
-  width: 100%;
-  padding: 14px 16px;
-  font-size: 1rem;
-  font-family: inherit;
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.search-input:focus {
-  border-color: var(--accent);
-}
-
-.search-input::placeholder {
-  color: var(--text-dim);
-}
-
-.suggestions {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  list-style: none;
-  overflow: hidden;
-  z-index: 10;
-}
-
-.suggestions li {
-  padding: 10px 16px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  transition: background 0.15s;
-}
-
-.suggestion-btn {
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: none;
-  color: var(--text);
-  font-size: 0.95rem;
-  cursor: pointer;
-  padding: 0;
-}
-
-.suggestions li:hover {
-  background: var(--accent);
 }
 
 /* ── Filter Toggle Button ─────────────────────────────── */
