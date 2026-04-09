@@ -22,13 +22,15 @@ export function Filter({ topN, qualityPower, isOpen, onTopNChange, onQualityPowe
     }
 
     return (
-        <div className="filter-overlay" onClick={onClose}>
-            <div className="filter-modal" onClick={(e) => e.stopPropagation()}>
-                <h3>Filters</h3>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/55 backdrop-blur-sm z-100"
+            onClick={onClose}>
+            <div className="border border-border rounded-2xl p-6 bg-surface gap-2 flex flex-col w-80" onClick={(e) => e.stopPropagation()}>
+                <h3 className="text-xl p-3 font-semibold">Filters</h3>
 
-                <div className="filter-field">
+                <div className="text-text-dim flex flex-col gap-2 w-full p-3">
                     <label htmlFor="topn-slider">Number of recommendations</label>
                     <input
+                        className='cursor-pointer accent-accent'
                         id="topn-slider"
                         type="range"
                         min={1}
@@ -37,12 +39,13 @@ export function Filter({ topN, qualityPower, isOpen, onTopNChange, onQualityPowe
                         value={localTopN}
                         onChange={(e) => setLocalTopN(Number(e.target.value))}
                     />
-                    <span className="range-value">{localTopN}</span>
+                    <span className="text-right text-accent">{localTopN}</span>
                 </div>
 
-                <div className="filter-field">
+                <div className="text-text-dim flex flex-col gap-2 w-full p-3">
                     <label htmlFor="quality-slider">Review Quality Weight</label>
                     <input
+                        className='cursor-pointer accent-accent'
                         id="quality-slider"
                         type="range"
                         min={0}
@@ -51,10 +54,12 @@ export function Filter({ topN, qualityPower, isOpen, onTopNChange, onQualityPowe
                         value={localQP}
                         onChange={(e) => setLocalQP(Number(e.target.value))}
                     />
-                    <span className="range-value">{localQP.toFixed(1)}</span>
+                    <span className="text-right text-accent">{localQP.toFixed(1)}</span>
                 </div>
 
-                <button className="filter-apply" onClick={handleApply}>Apply</button>
+                <button className="border p-2 rounded-lg bg-accent border-accent cursor-pointer
+                hover:bg-accent/80 hover:border-accent/80 hover:text-white font-semibold transition-all duration-150"
+                    onClick={handleApply}>Apply</button>
             </div>
         </div>
     )
