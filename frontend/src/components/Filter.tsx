@@ -15,6 +15,12 @@ export function Filter({ topN, qualityPower, isOpen, onTopNChange, onQualityPowe
 
     if (!isOpen) return null
 
+    const handleClose = () => {
+        setLocalTopN(topN)
+        setLocalQP(qualityPower)
+        onClose()
+    }
+
     const handleApply = () => {
         onTopNChange(localTopN)
         onQualityPowerChange(localQP)
@@ -23,7 +29,7 @@ export function Filter({ topN, qualityPower, isOpen, onTopNChange, onQualityPowe
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/55 backdrop-blur-sm z-100"
-            onClick={onClose}>
+            onClick={handleClose}>
             <div className="border border-border rounded-2xl p-6 bg-surface gap-2 flex flex-col w-80" onClick={(e) => e.stopPropagation()}>
                 <h3 className="text-xl p-3 font-semibold">Filters</h3>
 
