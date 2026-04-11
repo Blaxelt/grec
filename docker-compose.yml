@@ -19,12 +19,13 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://grec:grec@db:5432/grec
+      - CF_MODEL_DIR=/app/models/cf
     depends_on:
       db:
         condition: service_healthy
 
   pipeline:
-    profiles: [pipeline]
+    profiles: [ pipeline ]
     build:
       context: .
       dockerfile: pipeline/Dockerfile

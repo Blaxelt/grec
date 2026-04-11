@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from pathlib import Path
 
 import numpy as np
@@ -9,7 +10,7 @@ from implicit.cpu.als import AlternatingLeastSquares
 logger = logging.getLogger(__name__)
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
-MODEL_DIR = _PROJECT_ROOT / "data" / "models" / "cf"
+MODEL_DIR = Path(os.environ.get("CF_MODEL_DIR", _PROJECT_ROOT / "data" / "models" / "cf"))
 
 class CFModel:
 

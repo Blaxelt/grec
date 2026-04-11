@@ -139,6 +139,10 @@ def train_collaborative_filtering() -> None:
 
     print("\n══ Collaborative Filtering Pipeline ══")
 
+    if not csv_path.exists():
+        print(f"  Skipping: {csv_path} not found.")
+        return
+
     df = _load_interactions(csv_path)
 
     print("\nCleaning …")
