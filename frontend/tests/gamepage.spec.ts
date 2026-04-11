@@ -14,7 +14,7 @@ test.describe('Gamepage', () => {
   });
 
   test('has game description', async ({ page }) => {
-    await expect(page.locator('.game-description')).toBeVisible();
+    await expect(page.getByTestId('game-desc')).toBeVisible();
   });
 
   test('has game genres', async ({ page }) => {

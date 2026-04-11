@@ -19,7 +19,7 @@ export function RecommendationList({ isLoading, isError, data }: Props) {
             <h2 className="text-text-dim mb-3 text-sm">Games you might also like based on {data.target_game}</h2>
             <div className="flex flex-col gap-2" data-testid="results-list">
                 {data.recommendations.map((rec) => (
-                    <Link key={rec.app_id} to={`/games/${rec.app_id}`} className="flex items-center gap-3
+                    <Link key={rec.app_id} to={`/games/${rec.app_id}`} data-testid="result-card" className="flex items-center gap-3
                     border p-3 rounded-lg bg-surface border-border hover:border-accent transition-all duration-200">
                         <img
                             src={rec.header_image ?? undefined}

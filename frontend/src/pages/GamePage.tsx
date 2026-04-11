@@ -15,12 +15,12 @@ export default function GamePage() {
     if (isError || !game) return <p className="text-text-dim mt-8 text-center">Game not found.</p>
 
     return (
-        <div className="flex flex-col p-10">
+        <div className="flex flex-col p-10" >
             <h1 className="text-3xl font-semibold">{game.game_name}</h1>
             <div className="flex flex-col md:flex-row gap-6 mt-6 h-52">
                 <img className="rounded-xl shadow-lg shadow-black/50" src={game.header_image ?? undefined} alt='No header image available' />
 
-                <div className="flex flex-col gap-4 overflow-y-auto pr-2">
+                <div className="flex flex-col gap-4 overflow-y-auto pr-2" data-testid="game-desc">
                     <p className="l">{game.short_description}</p>
 
                     <div>

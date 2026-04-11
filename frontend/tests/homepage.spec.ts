@@ -33,7 +33,7 @@ test.describe('Homepage', () => {
     await page.getByRole('listitem').first().click();
 
     await expect(page.getByTestId('results-list')).toBeVisible();
-    const cards = page.getByTestId('results-list').locator('.result-card');
+    const cards = page.getByTestId('results-list').getByTestId('result-card');
     await expect(cards).toHaveCount(10)
   })
 
@@ -55,7 +55,7 @@ test.describe('Homepage', () => {
     }
     await page.getByRole('button', { name: 'Apply' }).click();
 
-    const cards = page.getByTestId('results-list').locator('.result-card');
+    const cards = page.getByTestId('results-list').getByTestId('result-card');
     await expect(cards).toHaveCount(5);
   });
 
@@ -64,7 +64,7 @@ test.describe('Homepage', () => {
     await expect(page.getByTestId('suggestions')).toBeVisible();
     await page.getByRole('listitem').first().click();
     await expect(page.getByTestId('results-list')).toBeVisible();
-    const cards = page.getByTestId('results-list').locator('.result-card');
+    const cards = page.getByTestId('results-list').getByTestId('result-card');
     await expect(cards).toHaveCount(10);
 
     const firstGameDefault = await cards.last().textContent();
@@ -85,7 +85,7 @@ test.describe('Homepage', () => {
     await page.getByRole('listitem').first().click();
 
     await expect(page.getByTestId('results-list')).toBeVisible();
-    const cards = page.getByTestId('results-list').locator('.result-card');
+    const cards = page.getByTestId('results-list').getByTestId('result-card');
     await expect(cards).toHaveCount(10);
 
     await cards.first().click();
