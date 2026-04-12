@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
-from sqlmodel import select
+from sqlmodel import select, case
 
 from app.api.deps import SessionDep
 from app.models import Game, GameDetail, GameSearchResult, GameRecommendation
@@ -17,7 +17,16 @@ def search_games(
     limit: int = Query(5, ge=1, le=20),
 ):
     """Search games by name."""
-    stmt = select(Game.app_id, Game.game_name).where(Game.game_name.ilike(f"%{q}%")).order_by(Game.game_name).limit(limit)
+    rank = case(
+        (Game.game_name.ilike(f"{q}%"), 0),
+        else_=1,
+    )
+    stmt = (
+        select(Game.app_id, Game.game_name)
+        .where(Game.game_name.ilike(f"%{q}%"))
+        .order_by(rank, Game.game_name)
+        .limit(limit)
+    )
     rows = session.exec(stmt).all()
     return [GameSearchResult(app_id=app_id, game_name=name) for app_id, name in rows]
 
