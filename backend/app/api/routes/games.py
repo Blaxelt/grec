@@ -13,11 +13,11 @@ cf_model = CFModel()
 @router.get("/search", response_model=list[GameSearchResult])
 def search_games(
     session: SessionDep,
-    q: str = Query(..., min_length=1, description="Search prefix"),
+    q: str = Query(..., min_length=1, description="Search query"),
     limit: int = Query(5, ge=1, le=20),
 ):
-    """Search games by name prefix."""
-    stmt = select(Game.game_name).where(Game.game_name.ilike(f"{q}%")).order_by(Game.game_name).limit(limit)
+    """Search games by name."""
+    stmt = select(Game.game_name).where(Game.game_name.ilike(f"%{q}%")).order_by(Game.game_name).limit(limit)
     rows = session.exec(stmt).all()
     return [GameSearchResult(game_name=name) for name in rows]
 
