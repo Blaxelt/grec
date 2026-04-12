@@ -22,6 +22,7 @@ class Game(SQLModel, table=True):
 class GameSearchResult(SQLModel):
     """Search result."""
 
+    app_id: int
     game_name: str
 
 class GameRecommendation(SQLModel):

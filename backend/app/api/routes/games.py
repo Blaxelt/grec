@@ -17,9 +17,9 @@ def search_games(
     limit: int = Query(5, ge=1, le=20),
 ):
     """Search games by name."""
-    stmt = select(Game.game_name).where(Game.game_name.ilike(f"%{q}%")).order_by(Game.game_name).limit(limit)
+    stmt = select(Game.app_id, Game.game_name).where(Game.game_name.ilike(f"%{q}%")).order_by(Game.game_name).limit(limit)
     rows = session.exec(stmt).all()
-    return [GameSearchResult(game_name=name) for name in rows]
+    return [GameSearchResult(app_id=app_id, game_name=name) for app_id, name in rows]
 
 
 @router.get("/{app_id}", response_model=GameDetail)

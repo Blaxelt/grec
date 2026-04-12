@@ -79,6 +79,10 @@ export type GameRecommendation = {
  */
 export type GameSearchResult = {
     /**
+     * App Id
+     */
+    app_id: number;
+    /**
      * Game Name
      */
     game_name: string;

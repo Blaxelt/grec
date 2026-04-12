@@ -9,6 +9,7 @@ import { SearchBox } from '../components/SearchBox'
 import { RecommendationList } from '../components/RecommendationList'
 import { Filter } from '../components/Filter'
 import { NavigationBar } from '../components/NavigationBar'
+import type { GameSearchResult } from '../client'
 
 export default function HomePage() {
     const [query, setQuery] = useState('')
@@ -33,9 +34,9 @@ export default function HomePage() {
         enabled: selectedGame.length > 0,
     })
 
-    const selectGame = (name: string) => {
-        setQuery(name)
-        setSelectedGame(name)
+    const selectGame = (game: GameSearchResult) => {
+        setQuery(game.game_name)
+        setSelectedGame(game.game_name)
     }
 
     return (

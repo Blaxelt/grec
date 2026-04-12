@@ -5,7 +5,7 @@ type Props = {
     onQueryChange: (value: string) => void
     suggestions: GameSearchResult[]
     showSuggestions: boolean
-    onSelectGame: (name: string) => void
+    onSelectGame: (game: GameSearchResult) => void
 }
 
 export function SearchBox({ query, onQueryChange, suggestions, showSuggestions, onSelectGame }: Props) {
@@ -25,7 +25,7 @@ export function SearchBox({ query, onQueryChange, suggestions, showSuggestions, 
                     data-testid="suggestions">
                     {suggestions.map((g) => (
                         <li key={g.game_name}>
-                            <button onClick={() => onSelectGame(g.game_name)} className="cursor-pointer w-full text-left hover:bg-accent p-2.5">
+                            <button onClick={() => onSelectGame(g)} className="cursor-pointer w-full text-left hover:bg-accent p-2.5">
                                 {g.game_name}
                             </button>
                         </li>
