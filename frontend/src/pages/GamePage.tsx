@@ -55,7 +55,7 @@ export default function GamePage() {
                 )}
 
                 {(game.other_players_also_played ?? []).length > 0 && (
-                    <div className="mt-9">
+                    <div className="mt-9" data-testid="recommendations">
                         <h2 className="mb-3 font-semibold text-xl">Other players also played</h2>
                         <div className="grid grid-cols-screenshots gap-3">
                             {(game.other_players_also_played ?? []).map((rec, i) => (

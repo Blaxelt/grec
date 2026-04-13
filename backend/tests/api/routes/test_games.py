@@ -37,7 +37,7 @@ def mock_session(rows=None, game=None):
 # ---------------------------------------------------------------------------
 
 def test_search_returns_matching_games():
-    app.dependency_overrides[deps.get_session] = lambda: mock_session(rows=["Dark souls 1", "Dark souls 2"])
+    app.dependency_overrides[deps.get_session] = lambda: mock_session(rows=[(1, "Dark souls 1"), (2, "Dark souls 2")])
     response = client.get("/games/search?q=Dark souls")
     app.dependency_overrides.clear()
 

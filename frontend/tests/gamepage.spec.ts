@@ -54,8 +54,7 @@ test.describe('Gamepage', () => {
 
     await page.goto('/games/570940');
 
-    const section = page.getByRole('heading', { name: 'Other players also played' });
-    const playerLinks = page.locator('div').filter({ has: section }).getByRole('link');
+    const playerLinks = page.getByTestId('recommendations').getByRole('link');
 
     await expect(playerLinks.first()).toBeVisible();
     await playerLinks.first().click();
