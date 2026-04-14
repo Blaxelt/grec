@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 const navItems = [
     { label: "Home", to: "/" },
     { label: "Search", to: "/search" },
+    { label: "Profile", to: "/profile" },
 ];
 
 export function NavigationBar() {

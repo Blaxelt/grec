@@ -3,6 +3,7 @@ import './index.css'
 import HomePage from './pages/HomePage'
 import GamePage from './pages/GamePage'
 import SearchGame from './pages/SearchGame'
+import Profile from './pages/Profile'
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/games/:id" element={<GamePage />} />
         <Route path="/search" element={<SearchGame />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   )
