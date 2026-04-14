@@ -99,6 +99,38 @@ export type HttpValidationError = {
 };
 
 /**
+ * ProfileRecommendationResponse
+ *
+ * Response wrapper for the /recommend/profile endpoint.
+ */
+export type ProfileRecommendationResponse = {
+    /**
+     * Recommendations
+     */
+    recommendations: Array<GameRecommendation>;
+};
+
+/**
+ * ProfileRequest
+ *
+ * Request body for the /recommend/profile endpoint.
+ */
+export type ProfileRequest = {
+    /**
+     * App Ids
+     */
+    app_ids: Array<number>;
+    /**
+     * Hours Played
+     */
+    hours_played: Array<number>;
+    /**
+     * Top N
+     */
+    top_n: number;
+};
+
+/**
  * RecommendationResponse
  *
  * Response wrapper for the /recommend endpoint.
@@ -149,7 +181,7 @@ export type SearchGamesGamesSearchGetData = {
         /**
          * Q
          *
-         * Search prefix
+         * Search query
          */
         q: string;
         /**
@@ -253,3 +285,28 @@ export type GetRecommendationsRecommendGetResponses = {
 };
 
 export type GetRecommendationsRecommendGetResponse = GetRecommendationsRecommendGetResponses[keyof GetRecommendationsRecommendGetResponses];
+
+export type GetProfileRecommendationsRecommendProfilePostData = {
+    body: ProfileRequest;
+    path?: never;
+    query?: never;
+    url: '/recommend/profile';
+};
+
+export type GetProfileRecommendationsRecommendProfilePostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetProfileRecommendationsRecommendProfilePostError = GetProfileRecommendationsRecommendProfilePostErrors[keyof GetProfileRecommendationsRecommendProfilePostErrors];
+
+export type GetProfileRecommendationsRecommendProfilePostResponses = {
+    /**
+     * Successful Response
+     */
+    200: ProfileRecommendationResponse;
+};
+
+export type GetProfileRecommendationsRecommendProfilePostResponse = GetProfileRecommendationsRecommendProfilePostResponses[keyof GetProfileRecommendationsRecommendProfilePostResponses];

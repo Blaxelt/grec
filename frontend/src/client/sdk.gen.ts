@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetGameGamesAppIdGetData, GetGameGamesAppIdGetErrors, GetGameGamesAppIdGetResponses, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetErrors, GetRecommendationsRecommendGetResponses, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetErrors, SearchGamesGamesSearchGetResponses } from './types.gen';
+import type { GetGameGamesAppIdGetData, GetGameGamesAppIdGetErrors, GetGameGamesAppIdGetResponses, GetProfileRecommendationsRecommendProfilePostData, GetProfileRecommendationsRecommendProfilePostErrors, GetProfileRecommendationsRecommendProfilePostResponses, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetErrors, GetRecommendationsRecommendGetResponses, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetErrors, SearchGamesGamesSearchGetResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -21,7 +21,7 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 /**
  * Search Games
  *
- * Search games by name prefix.
+ * Search games by name.
  */
 export const searchGamesGamesSearchGet = <ThrowOnError extends boolean = false>(options: Options<SearchGamesGamesSearchGetData, ThrowOnError>) => (options.client ?? client).get<SearchGamesGamesSearchGetResponses, SearchGamesGamesSearchGetErrors, ThrowOnError>({ url: '/games/search', ...options });
 
@@ -38,3 +38,17 @@ export const getGameGamesAppIdGet = <ThrowOnError extends boolean = false>(optio
  * Get similar game recommendations based on content similarity and review quality.
  */
 export const getRecommendationsRecommendGet = <ThrowOnError extends boolean = false>(options: Options<GetRecommendationsRecommendGetData, ThrowOnError>) => (options.client ?? client).get<GetRecommendationsRecommendGetResponses, GetRecommendationsRecommendGetErrors, ThrowOnError>({ url: '/recommend', ...options });
+
+/**
+ * Get Profile Recommendations
+ *
+ * Get recommendations based on a user profile.
+ */
+export const getProfileRecommendationsRecommendProfilePost = <ThrowOnError extends boolean = false>(options: Options<GetProfileRecommendationsRecommendProfilePostData, ThrowOnError>) => (options.client ?? client).post<GetProfileRecommendationsRecommendProfilePostResponses, GetProfileRecommendationsRecommendProfilePostErrors, ThrowOnError>({
+    url: '/recommend/profile',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
