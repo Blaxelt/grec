@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import SessionDep
@@ -6,6 +7,7 @@ from app.ml.cf_model import CFModel
 from app.models import Game, GameRecommendation, RecommendationResponse, ProfileRecommendationResponse, ProfileRequest
 
 router = APIRouter(tags=["recommendations"])
+logger = logging.getLogger(__name__)
 
 recommender = GameRecommender()
 cf_model = CFModel()
@@ -38,6 +40,9 @@ def get_profile_recommendations(session: SessionDep, body: ProfileRequest):
     recommendations = []
     for app_id, score in result:
         game = session.get(Game, app_id)
+        if game is None:
+            logger.warning("CF model recommended app_id %s not found in DB - skipping.", app_id)
+            continue
         recommendations.append(GameRecommendation(app_id=app_id, game_name=game.game_name, header_image=game.header_image, hybrid_score=score))
         
     return ProfileRecommendationResponse(recommendations=recommendations)

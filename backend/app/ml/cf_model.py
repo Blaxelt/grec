@@ -61,15 +61,21 @@ class CFModel:
             self._load()
 
         item_indeces = []
-        for app_id in app_ids:
+        known_hours = []
+        for app_id, hours in zip(app_ids, hours_played):
             item_idx = self._item_id_to_idx.get(str(app_id))
             if item_idx is None:
-                logger.debug("app_id %s not in CF index - skipping CF.", app_id)
-                return []
+                logger.debug("app_id %s not in CF index - skipping.", app_id)
+                continue
             item_indeces.append(item_idx)
+            known_hours.append(hours)
+
+        if not item_indeces:
+            logger.warning("None of the provided app_ids are in the CF index.")
+            return []
         
         n_items = len(self._item_id_to_idx)
-        hours_log = [np.log1p(min(h, self._hours_p99)) for h in hours_played]
+        hours_log = [np.log1p(min(h, self._hours_p99)) for h in known_hours]
         confidence = [1 + self._alpha * h for h in hours_log]
         user_item = sparse.csr_matrix(
             (confidence, ([0]*len(item_indeces), item_indeces)),
