@@ -1,6 +1,6 @@
 # GREC - Game Recommendation Engine
 
-GREC lets you search for a Steam game and get a ranked list of similar titles. Recommendations are driven by a hybrid engine combining **content-based filtering** (tags, genres, and descriptions), a Wilson score quality boost, and **collaborative filtering** using Alternating Least Squares (ALS).
+GREC lets you search for a Steam game and get a ranked list of similar titles. Recommendations are driven by a hybrid engine combining **content-based filtering** (tags, genres, and descriptions), a Wilson score quality boost, and **collaborative filtering** using Alternating Least Squares (ALS). Additionally, it allows you to create a profile of games you own and get recommendations based on your profile.
 
 ## How it works
 
@@ -50,7 +50,15 @@ docker compose up
 
 ### Game details
 
-![Game details](./img/game-details.png)
+![Game details](./img/game_details_1.png)
+
+![Game details](./img/game_details_2.png)
+
+### Profile
+
+![Profile](./img/library.png)
+
+![Profile](./img/library_rec.png)
 
 ## Tech stack
 
