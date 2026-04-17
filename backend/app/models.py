@@ -2,7 +2,7 @@ from pgvector.sqlalchemy import Vector
 from sqlalchemy import Column, Text
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlmodel import Field, SQLModel
-from pydantic import conlist, confloat, conint
+from pydantic import conlist, confloat, conint, model_validator
 
 class Game(SQLModel, table=True):
     """Maps to the existing 'games' table created by the pipeline."""
@@ -58,6 +58,12 @@ class ProfileRequest(SQLModel):
     app_ids: conlist(int, min_length=1, max_length=100)
     hours_played: conlist(confloat(ge=0), min_length=1, max_length=100)
     top_n: conint(gt=0, le=100)
+
+    @model_validator(mode="after")
+    def check_lengths(self):
+        if len(self.app_ids) != len(self.hours_played):
+            raise ValueError("app_ids and hours_played must have the same length")
+        return self
 
 class ProfileRecommendationResponse(SQLModel):
     """Response wrapper for the /recommend/profile endpoint."""
