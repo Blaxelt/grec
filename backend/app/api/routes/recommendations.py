@@ -34,9 +34,6 @@ def get_profile_recommendations(session: SessionDep, body: ProfileRequest):
     """Get recommendations based on a user profile."""
     result = cf_model.recommend(body.app_ids, body.hours_played, body.top_n)
     
-    if result is None:
-        raise HTTPException(status_code=404, detail=f"No recommendations found")
-    
     recommendations = []
     for app_id, score in result:
         game = session.get(Game, app_id)
