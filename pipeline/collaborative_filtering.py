@@ -4,6 +4,8 @@ import pandas as pd
 from pathlib import Path
 from scipy import sparse
 from implicit.als import AlternatingLeastSquares
+import kagglehub
+import shutil
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
@@ -140,8 +142,20 @@ def train_collaborative_filtering() -> None:
     print("\n══ Collaborative Filtering Pipeline ══")
 
     if not csv_path.exists():
-        print(f"  Skipping: {csv_path} not found.")
-        return
+        print(f"  Dataset not found: {csv_path}. Downloading from Kaggle...")
+        download_path = Path(kagglehub.dataset_download("antonkozyriev/game-recommendations-on-steam"))
+        print(f"  Dataset downloaded to {download_path}")
+
+        csv_path.parent.mkdir(parents=True, exist_ok=True)
+
+        downloaded_file = download_path / "recommendations.csv"
+        if downloaded_file.exists():
+            shutil.copy2(downloaded_file, csv_path)
+            print(f"  Dataset saved to {csv_path}")
+        else:
+            raise FileNotFoundError(
+                f"Downloaded dataset at {download_path} does not contain recommendations.csv"
+            )
 
     df = _load_interactions(csv_path)
 
