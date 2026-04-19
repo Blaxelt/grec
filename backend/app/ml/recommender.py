@@ -86,15 +86,21 @@ class GameRecommender:
         cbf_min, cbf_max = min(cbf_vals), max(cbf_vals)
         cf_min,  cf_max  = min(cf_vals),  max(cf_vals)
 
-        cbf_range = cbf_max - cbf_min if cbf_max != cbf_min else 1.0 # Avoid division by zero
-        cf_range  = cf_max  - cf_min  if cf_max  != cf_min  else 1.0
+        # Detect if CF contributed anything
+        cf_active = cf_max != cf_min  # False when all zeros
 
-        cbf_w = 1.0 - cf_weight
+        cbf_range = cbf_max - cbf_min if cbf_max != cbf_min else 1.0 # Avoid division by zero
+        cf_range  = cf_max  - cf_min  if cf_active else 1.0
+
+        # Adjust effective weights based on what's actually available
+        effective_cbf_w = 1.0 if not cf_active else 1.0 - cf_weight
+        effective_cf_w  = 0.0 if not cf_active else cf_weight
+
         scored: list[tuple[int, float]] = []
         for aid, cbf_raw, cf_raw in raw:
             norm_cbf = (cbf_raw - cbf_min) / cbf_range
             norm_cf  = (cf_raw  - cf_min)  / cf_range
-            hybrid   = cbf_w * norm_cbf + cf_weight * norm_cf
+            hybrid   = effective_cbf_w * norm_cbf + effective_cf_w * norm_cf
             scored.append((aid, hybrid))
 
         # Rank and pick final top-N
