@@ -211,6 +211,7 @@ def save_features(
         conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
         register_vector(conn)
         with conn.cursor() as cur:
+            vector_dim = combined_vectors.shape[1]
             cur.execute(
                 "CREATE TABLE IF NOT EXISTS games ("
                 "app_id bigint PRIMARY KEY, "
@@ -220,7 +221,7 @@ def save_features(
                 "genres text[], "
                 "tags text[], "
                 "screenshots text[], "
-                "combined_vector vector(860), "
+                f"combined_vector vector({vector_dim}), "
                 "wilson_score float)"
             )
 

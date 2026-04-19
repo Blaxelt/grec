@@ -17,7 +17,7 @@ def make_game(**kwargs) -> Game:
         genres=["Action", "RPG"],
         tags=["Singleplayer", "Open World"],
         screenshots=["https://example.com/ss1.jpg"],
-        combined_vector=[0.0] * 860,
+        combined_vector=[0.0] * 867,
         wilson_score=0.85,
     )
     defaults.update(kwargs)
