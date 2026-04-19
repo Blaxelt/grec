@@ -19,7 +19,7 @@ def clean_data(df: pd.DataFrame, output_path: Union[str, Path, None] = None) -> 
         Cleaned dataframe ready for processing
     """
     # Select potential columns needed for the system
-    cols_to_keep = ['name', 'genres', 'tags', 'positive', 'negative', 'short_description', 'header_image', 'screenshots']
+    cols_to_keep = ['name', 'genres', 'tags', 'positive', 'negative', 'recommendations', 'short_description', 'header_image', 'screenshots']
     df = df[cols_to_keep].copy()
     
     # Remove rows with empty name
@@ -28,17 +28,20 @@ def clean_data(df: pd.DataFrame, output_path: Union[str, Path, None] = None) -> 
     # Remove rows with empty genres
     df = df[df['genres'].str.len() > 0]
     
-    # Remove rows with empty tags
-    df = df[df['tags'].str.len() > 0]
-    
-    # Remove rows with 0 positive or 0 negative reviews
-    df = df[(df['positive'] > 0) & (df['negative'] > 0)]
+    # Handle scraped data missing positive/negative reviews but having recommendations
+    mask = (df['positive'] == 0) & (df['negative'] == 0) & (df['recommendations'] > 0)
+    # Give a conservative 80% / 20% positive/negative split so Wilson score isn't artificially 100%
+    df.loc[mask, 'positive'] = (df.loc[mask, 'recommendations'] * 0.8).astype(int)
+    df.loc[mask, 'negative'] = (df.loc[mask, 'recommendations'] * 0.2).astype(int)
     
     # Remove rows with empty short description
     df = df[df['short_description'].str.strip() != '']
     
     # Remove games with less than 100 reviews
     df = df[df['positive'] + df['negative'] >= 100]
+
+    # Remove rows with empty tags
+    df = df[df['tags'].str.len() > 0]
     
     # Handle duplicates
     df = _remove_redundant_duplicates(df)
