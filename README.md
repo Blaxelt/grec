@@ -69,6 +69,10 @@ docker compose up
 - **Frontend** - React + Vite + TanStack Query
 - **CI** - GitHub Actions
 
+## Limitations
+
+Some features, such as the **profile page recommendations** and the **"Other players also played"** section, are limited to a subset of the game catalog. This occurs because the collaborative filtering dataset used to train the model does not cover every game.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
