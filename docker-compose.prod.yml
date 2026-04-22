@@ -1,0 +1,16 @@
+# Production overrides — use with:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Requires a .env file on the server with:
+#   POSTGRES_PASSWORD=password
+#   CORS_ORIGIN=https://yourdomain.com
+
+services:
+  backend:
+    environment:
+      - DATABASE_URL=postgresql://grec:${POSTGRES_PASSWORD}@db:5432/grec
+      - CORS_ORIGIN=${CORS_ORIGIN}
+
+  db:
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

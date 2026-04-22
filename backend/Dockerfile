@@ -13,4 +13,4 @@ RUN uv sync --extra backend
 COPY ./backend/app ./app
 COPY ./data/models/cf ./models/cf
 
-CMD ["uv", "run", "--extra", "backend", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "--extra", "backend", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
