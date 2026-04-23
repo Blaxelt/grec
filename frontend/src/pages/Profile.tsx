@@ -43,6 +43,7 @@ export default function Profile() {
 
     const removeGame = (app_id: number) => {
         setGames(savedGames.filter((g) => g.app_id !== app_id))
+        reset()
     }
 
     const updateHours = (app_id: number, hours: number) => {
@@ -50,7 +51,7 @@ export default function Profile() {
     }
 
     // ── Recommendations ──
-    const { mutate, data: recData, isPending, isError } = useMutation(
+    const { mutate, reset, data: recData, isPending, isError } = useMutation(
         getProfileRecommendationsRecommendProfilePostMutation()
     )
 
@@ -71,9 +72,8 @@ export default function Profile() {
         <>
             <NavigationBar />
             <div className="flex flex-col p-10 max-w-4xl mx-auto">
-                <h1 className="text-3xl font-semibold mb-6">My Game Profile</h1>
+                <h1 className="text-3xl font-semibold mb-12">My Game Profile</h1>
                 <div className="mb-8">
-                    <h2 className="text-lg font-medium text-text-dim mb-2">Add a game</h2>
                     <SearchBox
                         query={query}
                         onQueryChange={setQuery}
@@ -131,7 +131,8 @@ export default function Profile() {
                 )}
 
                 {savedGames.length === 0 && (
-                    <p className="text-text-dim text-center mt-10">Search and add games above to build your profile.</p>
+                    <p className="text-text-dim text-center mt-10">Search and add games above to build your profile.
+                        <br />Some games won't get recommendations because they are not in the CF dataset.</p>
                 )}
 
                 {isError && (
