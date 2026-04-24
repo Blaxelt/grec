@@ -15,3 +15,12 @@
 
   --grid-template-columns-screenshots: repeat(auto-fill, minmax(300px, 1fr));
 }
+
+[data-theme="light"] {
+  --color-bg: #ffffff;
+  --color-surface: #e9d51c;
+  --color-border: #e9d51c;
+  --color-text: #1b1a1a;
+  --color-text-dim: #434443;
+  --color-accent: #d66524;
+}

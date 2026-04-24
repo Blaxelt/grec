@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { useTheme } from "../hooks/useTheme";
 
 const navItems = [
     { label: "Home", to: "/" },
@@ -8,6 +9,7 @@ const navItems = [
 
 export function NavigationBar() {
     const { pathname } = useLocation();
+    const { theme, toggle } = useTheme();
 
     return (
         <nav className="flex items-center h-14 px-10 bg-surface border-b border-border gap-8">
@@ -37,6 +39,14 @@ export function NavigationBar() {
                     );
                 })}
             </div>
+
+            <button
+                onClick={toggle}
+                title="Toggle theme"
+                className="ml-auto text-lg text-text-dim hover:text-text transition-colors cursor-pointer"
+            >
+                {theme === "dark" ? "🌙" : "☀️"}
+            </button>
         </nav>
     );
 }
