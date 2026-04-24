@@ -1,22 +1,14 @@
 import { useState, useEffect } from "react"
-import { useLocalStorage } from "react-use"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Link } from "react-router-dom"
 import { NavigationBar } from "../components/NavigationBar"
 import { SearchBox } from "../components/SearchBox"
 import { searchGamesGamesSearchGetOptions, getProfileRecommendationsRecommendProfilePostMutation } from "../client/@tanstack/react-query.gen"
 import type { GameSearchResult, GameRecommendation } from "../client"
-
-type SavedGame = {
-    app_id: number
-    game_name: string
-    header_image: string | null
-    hours: number
-}
+import { useProfileGames } from "../hooks/useProfileGames"
 
 export default function Profile() {
-    const [games, setGames] = useLocalStorage<SavedGame[]>("profile-games", [])
-    const savedGames = games ?? []
+    const { savedGames, addGame: addToProfile, removeGame: removeFromProfile, updateHours } = useProfileGames()
 
     const [query, setQuery] = useState("")
     const [debouncedQuery, setDebouncedQuery] = useState("")
@@ -37,17 +29,13 @@ export default function Profile() {
     )
 
     const addGame = (game: GameSearchResult) => {
-        setGames([...savedGames, { app_id: game.app_id, game_name: game.game_name, header_image: null, hours: 10 }])
+        addToProfile(game)
         setQuery("")
     }
 
     const removeGame = (app_id: number) => {
-        setGames(savedGames.filter((g) => g.app_id !== app_id))
+        removeFromProfile(app_id)
         reset()
-    }
-
-    const updateHours = (app_id: number, hours: number) => {
-        setGames(savedGames.map((g) => (g.app_id === app_id ? { ...g, hours } : g)))
     }
 
     // ── Recommendations ──

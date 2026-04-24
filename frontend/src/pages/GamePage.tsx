@@ -3,9 +3,11 @@ import { getGameGamesAppIdGetOptions } from '../client/@tanstack/react-query.gen
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { NavigationBar } from '../components/NavigationBar'
+import { useProfileGames } from '../hooks/useProfileGames'
 
 export default function GamePage() {
     const { id } = useParams<{ id: string }>()
+    const { addGame, hasGame } = useProfileGames()
 
     const { data: game, isLoading, isError } = useQuery({
         ...getGameGamesAppIdGetOptions({ path: { app_id: Number(id) } }),
@@ -14,6 +16,8 @@ export default function GamePage() {
 
     if (isLoading) return <p className="text-text-dim mt-8 text-center">Loading...</p>
     if (isError || !game) return <p className="text-text-dim mt-8 text-center">Game not found.</p>
+
+    const alreadySaved = hasGame(game.app_id)
 
     return (
         <>
@@ -35,6 +39,19 @@ export default function GamePage() {
                         </div>
                     </div>
 
+                </div>
+
+                <div className="mt-9">
+                    <button
+                        onClick={() => addGame({ app_id: game.app_id, game_name: game.game_name, header_image: game.header_image })}
+                        disabled={alreadySaved}
+                        className={`px-3 py-2 rounded-lg font-medium transition-all cursor-pointer
+                            ${alreadySaved
+                                ? 'bg-surface border border-border text-text-dim cursor-default'
+                                : 'bg-accent text-white hover:brightness-110'}`}
+                    >
+                        {alreadySaved ? '✓ In library' : 'Add to library'}
+                    </button>
                 </div>
 
                 {(game.screenshots ?? []).length > 0 && (
