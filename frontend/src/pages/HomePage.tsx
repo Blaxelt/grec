@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-
 import {
     searchGamesGamesSearchGetOptions,
     getRecommendationsRecommendGetOptions,
@@ -10,19 +9,15 @@ import { RecommendationList } from '../components/RecommendationList'
 import { Filter } from '../components/Filter'
 import { NavigationBar } from '../components/NavigationBar'
 import type { GameSearchResult } from '../client'
+import { useDebouncedQuery } from '../hooks/useDebouncedQuery'
 
 export default function HomePage() {
-    const [query, setQuery] = useState('')
-    const [debouncedQuery, setDebouncedQuery] = useState('')
     const [selectedGame, setSelectedGame] = useState('')
     const [topN, setTopN] = useState(10)
     const [qualityPower, setQualityPower] = useState(1.0)
     const [isFilterOpen, setIsFilterOpen] = useState(false)
 
-    useEffect(() => {
-        const id = setTimeout(() => setDebouncedQuery(query), 300)
-        return () => clearTimeout(id)
-    }, [query])
+    const { query, setQuery, debouncedQuery } = useDebouncedQuery()
 
     const { data: suggestions = [] } = useQuery({
         ...searchGamesGamesSearchGetOptions({ query: { q: debouncedQuery } }),

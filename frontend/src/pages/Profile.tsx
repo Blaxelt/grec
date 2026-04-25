@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Link } from "react-router-dom"
 import { NavigationBar } from "../components/NavigationBar"
@@ -6,17 +5,12 @@ import { SearchBox } from "../components/SearchBox"
 import { searchGamesGamesSearchGetOptions, getProfileRecommendationsRecommendProfilePostMutation } from "../client/@tanstack/react-query.gen"
 import type { GameSearchResult, GameRecommendation } from "../client"
 import { useProfileGames } from "../hooks/useProfileGames"
+import { useDebouncedQuery } from "../hooks/useDebouncedQuery"
 
 export default function Profile() {
     const { savedGames, addGame: addToProfile, removeGame: removeFromProfile, updateHours } = useProfileGames()
 
-    const [query, setQuery] = useState("")
-    const [debouncedQuery, setDebouncedQuery] = useState("")
-
-    useEffect(() => {
-        const id = setTimeout(() => setDebouncedQuery(query), 300)
-        return () => clearTimeout(id)
-    }, [query])
+    const { query, setQuery, debouncedQuery } = useDebouncedQuery()
 
     const { data: suggestions = [] } = useQuery({
         ...searchGamesGamesSearchGetOptions({ query: { q: debouncedQuery } }),

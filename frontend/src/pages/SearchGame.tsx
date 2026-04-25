@@ -1,20 +1,14 @@
 import { SearchBox } from "../components/SearchBox";
-import { useState, useEffect } from "react";
 import { NavigationBar } from "../components/NavigationBar";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { searchGamesGamesSearchGetOptions } from '../client/@tanstack/react-query.gen';
 import type { GameSearchResult } from '../client';
+import { useDebouncedQuery } from '../hooks/useDebouncedQuery';
 
 export default function SearchGame() {
-    const [query, setQuery] = useState("");
-    const [debouncedQuery, setDebouncedQuery] = useState("");
+    const { query, setQuery, debouncedQuery } = useDebouncedQuery()
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const id = setTimeout(() => setDebouncedQuery(query), 300)
-        return () => clearTimeout(id)
-    }, [query])
 
     const { data: suggestions = [] } = useQuery({
         ...searchGamesGamesSearchGetOptions({ query: { q: debouncedQuery } }),
