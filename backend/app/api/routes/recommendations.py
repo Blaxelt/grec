@@ -3,14 +3,13 @@ from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import SessionDep
 from app.ml.recommender import GameRecommender
-from app.ml.cf_model import CFModel
+from app.ml.cf_model import cf_model
 from app.models import Game, GameRecommendation, RecommendationResponse, ProfileRecommendationResponse, ProfileRequest
 
 router = APIRouter(tags=["recommendations"])
 logger = logging.getLogger(__name__)
 
 recommender = GameRecommender()
-cf_model = CFModel()
 
 @router.get("/recommend", response_model=RecommendationResponse)
 def get_recommendations(

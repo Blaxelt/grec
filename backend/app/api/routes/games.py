@@ -4,11 +4,9 @@ from sqlmodel import select, case
 from app.api.deps import SessionDep
 from app.models import Game, GameDetail, GameSearchResult, GameRecommendation
 
-from app.ml.cf_model import CFModel
+from app.ml.cf_model import cf_model
 
 router = APIRouter(prefix="/games", tags=["games"])
-
-cf_model = CFModel()
 
 @router.get("/search", response_model=list[GameSearchResult])
 def search_games(

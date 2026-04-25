@@ -94,3 +94,5 @@ class CFModel:
             (self._idx_to_item_id[str(idx)], float(score))
             for idx, score in zip(rec_indices, rec_scores)
         ]
+
+cf_model = CFModel()
