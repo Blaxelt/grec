@@ -39,17 +39,17 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Start Database
-        run: docker compose up -d db
+        run: docker compose run -d --name grec-db -p 5432:5432 db
 
       - name: Wait for Database to be ready
         run: |
-          until docker compose exec -T db pg_isready -U grec -d grec; do
+          until docker exec grec-db pg_isready -U grec -d grec; do
             echo "Waiting for postgres..."
             sleep 1
           done
 
       - name: Seed Database
-        run: cat db/seed.sql | docker compose exec -T db psql -v ON_ERROR_STOP=1 -U grec -d grec
+        run: cat db/seed.sql | docker exec -i grec-db psql -v ON_ERROR_STOP=1 -U grec -d grec
 
       - name: Run Playwright tests
         working-directory: frontend
