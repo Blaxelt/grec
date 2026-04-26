@@ -246,26 +246,3 @@ def save_features(
             )
             conn.commit()
             print(f"Successfully inserted {len(data)} games to database.")
-
-
-def load_features() -> dict:
-    """
-    Load pre-computed features from database.
-
-    Returns:
-        Dict with keys: 'combined_vectors', 'wilson_scores'.
-    """
-    with psycopg.connect(os.getenv("DATABASE_URL")) as conn:
-        register_vector(conn)
-        with conn.cursor() as cur:
-            cur.execute("SELECT combined_vector, wilson_score FROM games ORDER BY id")
-            rows = cur.fetchall()
-
-    combined_vectors = np.array([row[0] for row in rows])
-    wilson_scores = np.array([row[1] for row in rows])
-
-    print(f"Loaded {len(rows)} games from database.")
-    return {
-        'combined_vectors': combined_vectors,
-        'wilson_scores': wilson_scores,
-    }
