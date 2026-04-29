@@ -2,12 +2,12 @@ from sqlalchemy import func
 from sqlmodel import Session, select
 
 from app.models import Game, GameRecommendation
-from app.ml.cf_model import CFModel
+from app.ml.cf_model import cf_model
     
 class GameRecommender:
 
     def __init__(self) -> None:
-        self._cf = CFModel()
+        self._cf = cf_model
 
     def find_similar_games(
         self,
