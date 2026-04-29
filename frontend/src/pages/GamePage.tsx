@@ -28,7 +28,7 @@ export default function GamePage() {
                     <img className="rounded-xl shadow-lg shadow-black/50" src={game.header_image ?? undefined} alt='No header image available' />
 
                     <div className="flex flex-col gap-4 overflow-y-auto pr-2" data-testid="game-desc">
-                        <p className="l">{game.short_description}</p>
+                        <p>{game.short_description}</p>
 
                         <div>
                             <p><strong>Genres:</strong> {game.genres.join(', ')}</p>
@@ -63,7 +63,7 @@ export default function GamePage() {
                                     key={i}
                                     className="rounded-lg shadow-md shadow-black/30"
                                     src={url}
-                                    alt={`${game.game_name} screenshot ${i + 1} no available`}
+                                    alt={`${game.game_name} screenshot ${i + 1} not available`}
                                     loading="lazy"
                                 />
                             ))}
@@ -75,13 +75,12 @@ export default function GamePage() {
                     <div className="mt-9" data-testid="recommendations">
                         <h2 className="mb-3 font-semibold text-xl">Other players also played</h2>
                         <div className="grid grid-cols-screenshots gap-3">
-                            {(game.other_players_also_played ?? []).map((rec, i) => (
+                            {(game.other_players_also_played ?? []).map((rec) => (
                                 <Link key={rec.app_id} to={`/games/${rec.app_id}`}>
                                     <img
-                                        key={i}
                                         className="rounded-lg shadow-md shadow-black/30"
                                         src={rec.header_image ?? undefined}
-                                        alt={`${rec.game_name} no available`}
+                                        alt={`${rec.game_name} not available`}
                                         loading="lazy"
                                     />
                                 </Link>
