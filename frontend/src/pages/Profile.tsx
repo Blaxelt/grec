@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { Link } from "react-router-dom"
 import { NavigationBar } from "../components/NavigationBar"
 import { SearchBox } from "../components/SearchBox"
+import { GameCard } from "../components/GameCard"
 import { searchGamesGamesSearchGetOptions, getProfileRecommendationsRecommendProfilePostMutation } from "../client/@tanstack/react-query.gen"
 import type { GameSearchResult, GameRecommendation } from "../client"
 import { useProfileGames } from "../hooks/useProfileGames"
@@ -126,19 +127,13 @@ export default function Profile() {
                         <h2 className="text-lg font-medium text-text-dim mb-3">Recommended for you</h2>
                         <div className="flex flex-col gap-2">
                             {recommendations.map((rec) => (
-                                <Link
+                                <GameCard
                                     key={rec.app_id}
-                                    to={`/games/${rec.app_id}`}
-                                    className="flex items-center gap-3 border p-3 rounded-lg bg-surface border-border hover:border-accent transition-all duration-200"
-                                >
-                                    <img
-                                        src={rec.header_image ?? undefined}
-                                        alt={rec.game_name}
-                                        className="w-40 h-20 object-cover shrink-0 rounded-lg"
-                                    />
-                                    <span className="ml-1.5 truncate flex-1">{rec.game_name}</span>
-                                    <span className="ml-auto mr-1.5 text-accent">{(rec.hybrid_score * 100).toFixed(1)}%</span>
-                                </Link>
+                                    appId={rec.app_id}
+                                    gameName={rec.game_name}
+                                    headerImage={rec.header_image}
+                                    score={rec.hybrid_score}
+                                />
                             ))}
                         </div>
                     </div>

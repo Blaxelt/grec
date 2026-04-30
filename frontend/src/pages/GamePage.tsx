@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom'
 import { getGameGamesAppIdGetOptions } from '../client/@tanstack/react-query.gen'
 import { useQuery } from '@tanstack/react-query'
-import { Link } from 'react-router-dom'
 import { NavigationBar } from '../components/NavigationBar'
+import { GameCard } from '../components/GameCard'
 import { useProfileGames } from '../hooks/useProfileGames'
 
 export default function GamePage() {
@@ -76,14 +76,13 @@ export default function GamePage() {
                         <h2 className="mb-3 font-semibold text-xl">Other players also played</h2>
                         <div className="grid grid-cols-screenshots gap-3">
                             {(game.other_players_also_played ?? []).map((rec) => (
-                                <Link key={rec.app_id} to={`/games/${rec.app_id}`}>
-                                    <img
-                                        className="rounded-lg shadow-md shadow-black/30"
-                                        src={rec.header_image ?? undefined}
-                                        alt={`${rec.game_name} not available`}
-                                        loading="lazy"
-                                    />
-                                </Link>
+                                <GameCard
+                                    key={rec.app_id}
+                                    appId={rec.app_id}
+                                    gameName={rec.game_name}
+                                    headerImage={rec.header_image}
+                                    variant="image-only"
+                                />
                             ))}
                         </div>
                     </div>
