@@ -25,6 +25,13 @@ class GameSearchResult(SQLModel):
     app_id: int
     game_name: str
 
+class PlayedGameResponse(SQLModel):
+    """A game played by a user fetched from Steam."""
+
+    app_id: int
+    game_name: str
+    hours: float
+
 class GameRecommendation(SQLModel):
     """A single recommended game."""
 

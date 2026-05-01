@@ -2,8 +2,11 @@ import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
 
-from app.api.routes import games, recommendations
+from app.api.routes import games, recommendations, steam
+
+load_dotenv()
 
 app = FastAPI(title="GREC")
 
@@ -18,7 +21,7 @@ app.add_middleware(
 
 app.include_router(games.router)
 app.include_router(recommendations.router)
-
+app.include_router(steam.router)
 
 @app.get("/health", tags=["health"])
 def health_check():
