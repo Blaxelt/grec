@@ -37,6 +37,11 @@ export default function Profile() {
         reset()
     }
 
+    const clearProfile = () => {
+        clearGames()
+        reset()
+    }
+
     // ── Recommendations ──
     const { mutate, reset, data: recData, isPending, isError } = useMutation(
         getProfileRecommendationsRecommendProfilePostMutation()
@@ -146,7 +151,7 @@ export default function Profile() {
                         </button>
 
                         <button
-                            onClick={clearGames}
+                            onClick={clearProfile}
                             className="ml-4 mt-4 px-6 py-2.5 bg-accent text-white rounded-lg font-medium
                                        hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer"
                         >
@@ -156,8 +161,10 @@ export default function Profile() {
                 )}
 
                 {savedGames.length === 0 && (
-                    <p className="text-text-dim text-center mt-10">Search and add games above to build your profile.
-                        <br />Some games won't get recommendations because they are not in the CF dataset.</p>
+                    <p className="text-text-dim text-center mt-8">Search and add games above to build your profile.
+                        <br /><br />Some games may not be included in the collaborative filtering dataset. If so, they won't
+                        be used when generating recommendations. Results will be based only on games that are present
+                        in the training data.</p>
                 )}
 
                 {isError && (
