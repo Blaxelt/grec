@@ -12,7 +12,7 @@ import { getLibrarySteamLibrarySteamIdGetOptions } from "../client/@tanstack/rea
 
 
 export default function Profile() {
-    const { savedGames, addGame: addToProfile, addGames: addAllToProfile, removeGame: removeFromProfile, updateHours } = useProfileGames()
+    const { savedGames, addGame: addToProfile, addGames: addAllToProfile, removeGame: removeFromProfile, clearGames, updateHours } = useProfileGames()
     const [steamId, setSteamId] = useState("")
 
     const { query, setQuery, debouncedQuery } = useDebouncedQuery()
@@ -143,6 +143,14 @@ export default function Profile() {
                                        hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer"
                         >
                             {isPending ? "Loading…" : "Get Recommendations"}
+                        </button>
+
+                        <button
+                            onClick={clearGames}
+                            className="ml-4 mt-4 px-6 py-2.5 bg-accent text-white rounded-lg font-medium
+                                       hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer"
+                        >
+                            Clear Profile
                         </button>
                     </div>
                 )}

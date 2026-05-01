@@ -38,11 +38,13 @@ export function useProfileGames() {
         setGames(savedGames.filter((g) => g.app_id !== app_id))
     }
 
+    const clearGames = () => setGames([])
+
     const updateHours = (app_id: number, hours: number) => {
         setGames(savedGames.map((g) => (g.app_id === app_id ? { ...g, hours } : g)))
     }
 
     const hasGame = (app_id: number) => savedGames.some((g) => g.app_id === app_id)
 
-    return { savedGames, addGame, addGames, removeGame, updateHours, hasGame }
+    return { savedGames, addGame, addGames, removeGame, clearGames, updateHours, hasGame }
 }
