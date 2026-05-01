@@ -25,6 +25,7 @@ export function GameCard({ appId, gameName, headerImage, score, variant = 'row' 
     return (
         <Link
             to={`/games/${appId}`}
+            data-testid="result-card"
             className="flex items-center gap-3 border p-3 rounded-lg bg-surface border-border hover:border-accent transition-all duration-200"
         >
             <img
