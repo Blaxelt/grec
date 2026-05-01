@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetGameGamesAppIdGetData, GetGameGamesAppIdGetErrors, GetGameGamesAppIdGetResponses, GetProfileRecommendationsRecommendProfilePostData, GetProfileRecommendationsRecommendProfilePostErrors, GetProfileRecommendationsRecommendProfilePostResponses, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetErrors, GetRecommendationsRecommendGetResponses, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetErrors, SearchGamesGamesSearchGetResponses } from './types.gen';
+import type { GetGameGamesAppIdGetData, GetGameGamesAppIdGetErrors, GetGameGamesAppIdGetResponses, GetLibrarySteamLibrarySteamIdGetData, GetLibrarySteamLibrarySteamIdGetErrors, GetLibrarySteamLibrarySteamIdGetResponses, GetProfileRecommendationsRecommendProfilePostData, GetProfileRecommendationsRecommendProfilePostErrors, GetProfileRecommendationsRecommendProfilePostResponses, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetErrors, GetRecommendationsRecommendGetResponses, HealthCheckHealthGetData, HealthCheckHealthGetResponses, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetErrors, SearchGamesGamesSearchGetResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -52,3 +52,15 @@ export const getProfileRecommendationsRecommendProfilePost = <ThrowOnError exten
         ...options.headers
     }
 });
+
+/**
+ * Get Library
+ *
+ * Get all games in a user's library that has more than 0 hours playtime.
+ */
+export const getLibrarySteamLibrarySteamIdGet = <ThrowOnError extends boolean = false>(options: Options<GetLibrarySteamLibrarySteamIdGetData, ThrowOnError>) => (options.client ?? client).get<GetLibrarySteamLibrarySteamIdGetResponses, GetLibrarySteamLibrarySteamIdGetErrors, ThrowOnError>({ url: '/steam/library/{steam_id}', ...options });
+
+/**
+ * Health Check
+ */
+export const healthCheckHealthGet = <ThrowOnError extends boolean = false>(options?: Options<HealthCheckHealthGetData, ThrowOnError>) => (options?.client ?? client).get<HealthCheckHealthGetResponses, unknown, ThrowOnError>({ url: '/health', ...options });

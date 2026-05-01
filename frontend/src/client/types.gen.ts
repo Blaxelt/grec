@@ -99,6 +99,26 @@ export type HttpValidationError = {
 };
 
 /**
+ * PlayedGameResponse
+ *
+ * A game played by a user fetched from Steam.
+ */
+export type PlayedGameResponse = {
+    /**
+     * App Id
+     */
+    app_id: number;
+    /**
+     * Game Name
+     */
+    game_name: string;
+    /**
+     * Hours
+     */
+    hours: number;
+};
+
+/**
  * ProfileRecommendationResponse
  *
  * Response wrapper for the /recommend/profile endpoint.
@@ -310,3 +330,51 @@ export type GetProfileRecommendationsRecommendProfilePostResponses = {
 };
 
 export type GetProfileRecommendationsRecommendProfilePostResponse = GetProfileRecommendationsRecommendProfilePostResponses[keyof GetProfileRecommendationsRecommendProfilePostResponses];
+
+export type GetLibrarySteamLibrarySteamIdGetData = {
+    body?: never;
+    path: {
+        /**
+         * Steam Id
+         *
+         * Steam user ID
+         */
+        steam_id: string;
+    };
+    query?: never;
+    url: '/steam/library/{steam_id}';
+};
+
+export type GetLibrarySteamLibrarySteamIdGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetLibrarySteamLibrarySteamIdGetError = GetLibrarySteamLibrarySteamIdGetErrors[keyof GetLibrarySteamLibrarySteamIdGetErrors];
+
+export type GetLibrarySteamLibrarySteamIdGetResponses = {
+    /**
+     * Response Get Library Steam Library  Steam Id  Get
+     *
+     * Successful Response
+     */
+    200: Array<PlayedGameResponse>;
+};
+
+export type GetLibrarySteamLibrarySteamIdGetResponse = GetLibrarySteamLibrarySteamIdGetResponses[keyof GetLibrarySteamLibrarySteamIdGetResponses];
+
+export type HealthCheckHealthGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/health';
+};
+
+export type HealthCheckHealthGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};

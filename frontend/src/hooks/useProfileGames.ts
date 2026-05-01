@@ -11,14 +11,27 @@ export function useProfileGames() {
     const [games, setGames] = useLocalStorage<SavedGame[]>("profile-games", [])
     const savedGames = games ?? []
 
-    const addGame = (game: { app_id: number; game_name: string; header_image?: string | null }) => {
+    const addGame = (game: { app_id: number; game_name: string; header_image?: string | null; hours?: number }) => {
         if (savedGames.some((g) => g.app_id === game.app_id)) return
         setGames([...savedGames, {
             app_id: game.app_id,
             game_name: game.game_name,
             header_image: game.header_image ?? null,
-            hours: 10,
+            hours: game.hours ?? 10,
         }])
+    }
+
+    const addGames = (newGames: { app_id: number; game_name: string; header_image?: string | null; hours?: number }[]) => {
+        setGames((prev) => {
+            const current = prev ?? []
+            const toAdd = newGames.filter(g => !current.some(s => s.app_id === g.app_id))
+            return [...current, ...toAdd.map(g => ({
+                app_id: g.app_id,
+                game_name: g.game_name,
+                header_image: g.header_image ?? null,
+                hours: g.hours ?? 10,
+            }))]
+        })
     }
 
     const removeGame = (app_id: number) => {
@@ -31,5 +44,5 @@ export function useProfileGames() {
 
     const hasGame = (app_id: number) => savedGames.some((g) => g.app_id === app_id)
 
-    return { savedGames, addGame, removeGame, updateHours, hasGame }
+    return { savedGames, addGame, addGames, removeGame, updateHours, hasGame }
 }

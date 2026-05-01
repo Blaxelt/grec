@@ -7,9 +7,13 @@ import { searchGamesGamesSearchGetOptions, getProfileRecommendationsRecommendPro
 import type { GameSearchResult, GameRecommendation } from "../client"
 import { useProfileGames } from "../hooks/useProfileGames"
 import { useDebouncedQuery } from "../hooks/useDebouncedQuery"
+import { useState, useEffect } from "react"
+import { getLibrarySteamLibrarySteamIdGetOptions } from "../client/@tanstack/react-query.gen"
+
 
 export default function Profile() {
-    const { savedGames, addGame: addToProfile, removeGame: removeFromProfile, updateHours } = useProfileGames()
+    const { savedGames, addGame: addToProfile, addGames: addAllToProfile, removeGame: removeFromProfile, updateHours } = useProfileGames()
+    const [steamId, setSteamId] = useState("")
 
     const { query, setQuery, debouncedQuery } = useDebouncedQuery()
 
@@ -49,13 +53,43 @@ export default function Profile() {
         })
     }
 
+    const { data: playedGames, refetch: fetchPlayedGames, error: steamError, isFetched: steamFetched } = useQuery({
+        ...getLibrarySteamLibrarySteamIdGetOptions({ path: { steam_id: steamId } }),
+        enabled: false,
+        retry: false,
+    })
+
+    useEffect(() => {
+        if (playedGames && playedGames.length > 0) {
+            addAllToProfile(playedGames)
+        }
+    }, [playedGames])
+
     const recommendations: GameRecommendation[] = recData?.recommendations ?? []
 
     return (
         <>
             <NavigationBar />
             <div className="flex flex-col p-10 max-w-4xl mx-auto">
-                <h1 className="text-3xl font-semibold mb-12">My Game Profile</h1>
+                <h1 className="text-3xl font-semibold mb-8">My Game Profile</h1>
+                <div className="flex gap-4 mb-8">
+                    <input className="border border-border rounded bg-surface px-2 py-1 text-text outline-none focus:border-accent hover:border-accent transition-colors"
+                        type="text"
+                        value={steamId}
+                        onChange={(e) => setSteamId(e.target.value)}
+                        placeholder="Steam user ID" />
+                    <button className="bg-accent text-white rounded px-2 py-1 cursor-pointer hover:bg-accent/80 transition-colors"
+                        onClick={() => fetchPlayedGames()}>Fetch library games</button>
+                </div>
+
+                {steamError && (
+                    <p className="text-red-400 mb-8">Request failed - the Steam user ID may be invalid or Steam's API is unavailable.</p>
+                )}
+
+                {steamFetched && !steamError && playedGames?.length === 0 && (
+                    <p className="text-yellow-400 mb-8">No games found - profile may be private or library is empty.</p>
+                )}
+
                 <div className="mb-8">
                     <SearchBox
                         query={query}
