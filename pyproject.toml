@@ -17,6 +17,7 @@ dependencies = [
 backend = [
     "fastapi[standard]==0.129.0",
     "implicit==0.7.2",
+    "requests",
 ]
 pipeline = [
     "kagglehub==0.4.3",
