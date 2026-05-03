@@ -26,4 +26,5 @@ jobs:
       - name: Run tests with pytest
         env:
           DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
         run: pytest
