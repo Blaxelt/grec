@@ -14,11 +14,22 @@ The `/notebooks` directory contains experimentation and analysis covering the da
 
 Requirement: [Docker](https://docs.docker.com/get-docker/)
 
-**First time setup** - clone the repository, build images, populate the database, then start the app:
+**First time setup** - clone the repository:
 
 ```bash
 git clone https://github.com/Blaxelt/grec.git
 cd grec
+```
+
+**Configuration** - You need a Steam API key to enable the Steam game library import feature. Get one [here](https://steamcommunity.com/dev/apikey) and create a `.env` file in the root directory:
+
+```bash
+echo "STEAM_API_KEY=your_steam_api_key" > .env
+```
+
+**Start the app** - build the images, populate the database, and start the app:
+
+```bash
 docker compose build
 docker compose run pipeline   # downloads data and populates the DB (takes a while)
 docker compose up
