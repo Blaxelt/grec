@@ -6,14 +6,17 @@ from app.models import PlayedGameResponse
 router = APIRouter(prefix="/steam", tags=["steam"])
 
 STEAM_API_KEY = os.getenv("STEAM_API_KEY")
-if not STEAM_API_KEY:
-    raise RuntimeError("STEAM_API_KEY environment variable is not set")
 
 @router.get("/library/{steam_id}", response_model=list[PlayedGameResponse])
 def get_library(
     steam_id: str = Path(..., min_length=1, description="Steam user ID"),
 ):
     """Get all games in a user's library that has more than 0 hours playtime."""
+    if not STEAM_API_KEY:
+        raise HTTPException(
+            status_code=503, detail="Steam API integration is not configured"
+        )
+
     url = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/"
     params = {
         "key": STEAM_API_KEY,
