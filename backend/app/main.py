@@ -1,14 +1,26 @@
+import logging
 import os
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from app.api.routes import games, recommendations, steam
+from app.ml.cf_model import cf_model
 
 load_dotenv()
 
-app = FastAPI(title="GREC")
+logger = logging.getLogger(__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    cf_model.load()
+    if cf_model.available:
+        logger.info("CF model preloaded successfully")
+    yield
+
+app = FastAPI(title="GREC", lifespan=lifespan)
 
 cors_origin = os.getenv("CORS_ORIGIN", "http://localhost:5173")
 

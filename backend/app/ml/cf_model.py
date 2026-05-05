@@ -36,10 +36,16 @@ class CFModel:
         self._model = AlternatingLeastSquares.load(str(MODEL_DIR / "model.npz"))
         with open(MODEL_DIR / "metadata.json") as f:
             meta = json.load(f)
-        self._item_id_to_idx = meta["item_id_to_idx"]  
-        self._idx_to_item_id = meta["idx_to_item_id"]   
+        self._item_id_to_idx = meta["item_id_to_idx"]
+        self._idx_to_item_id = meta["idx_to_item_id"]
         self._hours_p99 = float(meta["hours_p99"])
         self._alpha = float(meta["alpha"])
+
+    def load(self) -> None:
+        """Load model and metadata from disk if available."""
+        if not self.available:
+            return
+        self._load()
 
     def recommend(
         self,
