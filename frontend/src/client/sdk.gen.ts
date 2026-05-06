@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetGameGamesAppIdGetData, GetGameGamesAppIdGetErrors, GetGameGamesAppIdGetResponses, GetLibrarySteamLibrarySteamIdGetData, GetLibrarySteamLibrarySteamIdGetErrors, GetLibrarySteamLibrarySteamIdGetResponses, GetProfileRecommendationsRecommendProfilePostData, GetProfileRecommendationsRecommendProfilePostErrors, GetProfileRecommendationsRecommendProfilePostResponses, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetErrors, GetRecommendationsRecommendGetResponses, HealthCheckHealthGetData, HealthCheckHealthGetResponses, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetErrors, SearchGamesGamesSearchGetResponses } from './types.gen';
+import type { GetGameGamesAppIdGetData, GetGameGamesAppIdGetErrors, GetGameGamesAppIdGetResponses, GetLibrarySteamLibrarySteamIdGetData, GetLibrarySteamLibrarySteamIdGetErrors, GetLibrarySteamLibrarySteamIdGetResponses, GetProfileRecommendationsRecommendProfilePostData, GetProfileRecommendationsRecommendProfilePostErrors, GetProfileRecommendationsRecommendProfilePostResponses, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetErrors, GetRecommendationsRecommendGetResponses, HealthCheckHealthGetData, HealthCheckHealthGetResponses, SearchGamesByTagsGamesByTagsGetData, SearchGamesByTagsGamesByTagsGetErrors, SearchGamesByTagsGamesByTagsGetResponses, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetErrors, SearchGamesGamesSearchGetResponses, SearchTagsGamesTagsGetData, SearchTagsGamesTagsGetErrors, SearchTagsGamesTagsGetResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -24,6 +24,20 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  * Search games by name.
  */
 export const searchGamesGamesSearchGet = <ThrowOnError extends boolean = false>(options: Options<SearchGamesGamesSearchGetData, ThrowOnError>) => (options.client ?? client).get<SearchGamesGamesSearchGetResponses, SearchGamesGamesSearchGetErrors, ThrowOnError>({ url: '/games/search', ...options });
+
+/**
+ * Search Tags
+ *
+ * Search tags by name.
+ */
+export const searchTagsGamesTagsGet = <ThrowOnError extends boolean = false>(options: Options<SearchTagsGamesTagsGetData, ThrowOnError>) => (options.client ?? client).get<SearchTagsGamesTagsGetResponses, SearchTagsGamesTagsGetErrors, ThrowOnError>({ url: '/games/tags', ...options });
+
+/**
+ * Search Games By Tags
+ *
+ * Search games by tags (AND logic — games must have all selected tags).
+ */
+export const searchGamesByTagsGamesByTagsGet = <ThrowOnError extends boolean = false>(options: Options<SearchGamesByTagsGamesByTagsGetData, ThrowOnError>) => (options.client ?? client).get<SearchGamesByTagsGamesByTagsGetResponses, SearchGamesByTagsGamesByTagsGetErrors, ThrowOnError>({ url: '/games/by-tags', ...options });
 
 /**
  * Get Game

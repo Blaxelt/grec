@@ -89,6 +89,30 @@ export type GameSearchResult = {
 };
 
 /**
+ * GameTagResult
+ *
+ * Result for a single tag search.
+ */
+export type GameTagResult = {
+    /**
+     * App Id
+     */
+    app_id: number;
+    /**
+     * Game Name
+     */
+    game_name: string;
+    /**
+     * Header Image
+     */
+    header_image: string | null;
+    /**
+     * Tags
+     */
+    tags: Array<string>;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -231,6 +255,88 @@ export type SearchGamesGamesSearchGetResponses = {
 };
 
 export type SearchGamesGamesSearchGetResponse = SearchGamesGamesSearchGetResponses[keyof SearchGamesGamesSearchGetResponses];
+
+export type SearchTagsGamesTagsGetData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Q
+         *
+         * Search query
+         */
+        q: string;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/games/tags';
+};
+
+export type SearchTagsGamesTagsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SearchTagsGamesTagsGetError = SearchTagsGamesTagsGetErrors[keyof SearchTagsGamesTagsGetErrors];
+
+export type SearchTagsGamesTagsGetResponses = {
+    /**
+     * Response Search Tags Games Tags Get
+     *
+     * Successful Response
+     */
+    200: Array<string>;
+};
+
+export type SearchTagsGamesTagsGetResponse = SearchTagsGamesTagsGetResponses[keyof SearchTagsGamesTagsGetResponses];
+
+export type SearchGamesByTagsGamesByTagsGetData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Tags
+         *
+         * Tags to filter by
+         */
+        tags: Array<string>;
+        /**
+         * Limit
+         */
+        limit?: number;
+        /**
+         * Offset
+         *
+         * Number of results to skip
+         */
+        offset?: number;
+    };
+    url: '/games/by-tags';
+};
+
+export type SearchGamesByTagsGamesByTagsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SearchGamesByTagsGamesByTagsGetError = SearchGamesByTagsGamesByTagsGetErrors[keyof SearchGamesByTagsGamesByTagsGetErrors];
+
+export type SearchGamesByTagsGamesByTagsGetResponses = {
+    /**
+     * Response Search Games By Tags Games By Tags Get
+     *
+     * Successful Response
+     */
+    200: Array<GameTagResult>;
+};
+
+export type SearchGamesByTagsGamesByTagsGetResponse = SearchGamesByTagsGamesByTagsGetResponses[keyof SearchGamesByTagsGamesByTagsGetResponses];
 
 export type GetGameGamesAppIdGetData = {
     body?: never;

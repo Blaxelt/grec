@@ -5,10 +5,11 @@ type Props = {
     gameName: string
     headerImage?: string | null
     score?: number
+    tags?: string[]
     variant?: 'row' | 'image-only'
 }
 
-export function GameCard({ appId, gameName, headerImage, score, variant = 'row' }: Props) {
+export function GameCard({ appId, gameName, headerImage, score, tags, variant = 'row' }: Props) {
     if (variant === 'image-only') {
         return (
             <Link to={`/games/${appId}`}>
@@ -33,9 +34,26 @@ export function GameCard({ appId, gameName, headerImage, score, variant = 'row' 
                 alt={gameName}
                 className="w-40 h-20 object-cover shrink-0 rounded-lg"
             />
-            <span className="ml-1.5 truncate flex-1">{gameName}</span>
+            <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                <span className="truncate">{gameName}</span>
+                {tags && tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                        {tags.slice(0, 6).map((tag) => (
+                            <span
+                                key={tag}
+                                className={`text-xs px-2 py-0.5 rounded-full border bg-white/5 border-border text-text`}
+                            >
+                                {tag}
+                            </span>
+                        ))}
+                        {tags.length > 6 && (
+                            <span className="text-xs text-text px-1">...</span>
+                        )}
+                    </div>
+                )}
+            </div>
             {score !== undefined && (
-                <span className="ml-auto mr-1.5 text-accent">{(score * 100).toFixed(1)}%</span>
+                <span className="ml-auto mr-1.5 text-accent shrink-0">{(score * 100).toFixed(1)}%</span>
             )}
         </Link>
     )
