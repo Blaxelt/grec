@@ -76,3 +76,11 @@ class ProfileRecommendationResponse(SQLModel):
     """Response wrapper for the /recommend/profile endpoint."""
 
     recommendations: list[GameRecommendation]
+
+class GameTagResult(SQLModel):
+    """Result for a single tag search."""
+
+    app_id: int
+    game_name: str
+    header_image: str | None
+    tags: list[str]
