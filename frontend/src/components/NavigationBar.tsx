@@ -40,10 +40,20 @@ export function NavigationBar() {
                 })}
             </div>
 
+            <a
+                href="https://github.com/Blaxelt/grec"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="GitHub"
+                className="ml-auto cursor-pointer"
+            >
+                <img src="/github_logo.svg" alt="GitHub" className="w-6 h-6" />
+            </a>
+
             <button
                 onClick={toggle}
                 title="Toggle theme"
-                className="ml-auto text-lg text-text-dim hover:text-text transition-colors cursor-pointer"
+                className="text-lg text-text-dim hover:text-text transition-colors cursor-pointer"
             >
                 {theme === "dark" ? "🌙" : "☀️"}
             </button>
