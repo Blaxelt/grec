@@ -116,8 +116,10 @@ test.describe('Search Page', () => {
 
   test('clicking a tag result navigates to game page', async ({ page }) => {
     const tagInput = page.getByPlaceholder(/Search for tags/);
-    await tagInput.fill('Action');
-    await page.getByRole('listitem').filter({ hasText: /^Action$/ }).click();
+    await tagInput.fill('RPG');
+    const tagOption = page.getByRole('listitem').filter({ hasText: /^RPG$/ });
+    await expect(tagOption).toBeVisible();
+    await tagOption.click();
 
     const card = page.getByTestId('result-card').first();
     await expect(card).toBeVisible();
