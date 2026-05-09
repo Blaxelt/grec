@@ -168,3 +168,69 @@ def test_get_tags_limit_above_max_returns_422():
 def test_get_tags_limit_below_min_returns_422():
     response = client.get("/games/tags?q=Action&limit=0")
     assert response.status_code == 422
+
+# ---------------------------------------------------------------------------
+# GET /games/by-tags
+# ---------------------------------------------------------------------------
+
+def test_get_by_tags_returns_games():
+    app.dependency_overrides[deps.get_session] = lambda: mock_session(rows=[
+        (1, "Dark Souls", "https://example.com/ds.jpg", ["Action", "RPG"], 0.95),
+        (2, "Elden Ring", "https://example.com/er.jpg", ["Action", "RPG", "Open World"], 0.92),
+    ])
+    response = client.get("/games/by-tags?tags=Action&tags=RPG&limit=2")
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    assert len(data) == 2
+    assert data[0]["app_id"] == 1
+    assert data[0]["game_name"] == "Dark Souls"
+    assert data[0]["header_image"] == "https://example.com/ds.jpg"
+    assert data[0]["tags"] == ["Action", "RPG"]
+    assert data[1]["app_id"] == 2
+    assert data[1]["game_name"] == "Elden Ring"
+    assert data[1]["header_image"] == "https://example.com/er.jpg"
+    assert data[1]["tags"] == ["Action", "RPG", "Open World"]
+
+
+def test_get_by_tags_returns_empty_list_when_no_match():
+    app.dependency_overrides[deps.get_session] = lambda: mock_session(rows=[])
+    response = client.get("/games/by-tags?tags=NonexistentTag")
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    assert response.json() == []
+
+
+def test_get_by_tags_missing_tags_param_returns_422():
+    response = client.get("/games/by-tags")
+    assert response.status_code == 422
+
+
+def test_get_by_tags_limit_above_max_returns_422():
+    response = client.get("/games/by-tags?tags=Action&limit=101")
+    assert response.status_code == 422
+
+
+def test_get_by_tags_limit_below_min_returns_422():
+    response = client.get("/games/by-tags?tags=Action&limit=0")
+    assert response.status_code == 422
+
+
+def test_get_by_tags_offset_negative_returns_422():
+    response = client.get("/games/by-tags?tags=Action&offset=-1")
+    assert response.status_code == 422
+
+
+def test_get_by_tags_header_image_none():
+    app.dependency_overrides[deps.get_session] = lambda: mock_session(rows=[
+        (3, "Some Game", None, ["Action"], 0.88),
+    ])
+    response = client.get("/games/by-tags?tags=Action")
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data[0]["header_image"] is None
