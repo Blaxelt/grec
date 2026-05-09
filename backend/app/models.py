@@ -64,8 +64,8 @@ class RecommendationResponse(SQLModel):
 class ProfileRequest(SQLModel):
     """Request body for the /recommend/profile endpoint."""
 
-    app_ids: Annotated[list[int], Field(min_length=1, max_length=100)]
-    hours_played: Annotated[list[Annotated[float, Field(ge=0)]], Field(min_length=1, max_length=100)]
+    app_ids: Annotated[list[int], Field(min_length=1, max_length=1000)]
+    hours_played: Annotated[list[Annotated[float, Field(ge=0)]], Field(min_length=1, max_length=1000)]
     top_n: Annotated[int, Field(gt=0, le=100)]
 
     @model_validator(mode="after")
