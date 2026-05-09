@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 
 import app.api.deps as deps
 from app.main import app
-from app.models import Game
+from app.models import Game, GameTagResult
 
 client = TestClient(app)
 
@@ -129,3 +129,42 @@ def test_get_game_screenshots_fallback_to_empty_list():
 
     assert response.status_code == 200
     assert response.json()["screenshots"] == []
+
+# ---------------------------------------------------------------------------
+# GET /games/tags
+# ---------------------------------------------------------------------------
+
+def test_get_tags_returns_tags():
+    app.dependency_overrides[deps.get_session] = lambda: mock_session(rows=["Action", "Action RPG"])
+    response = client.get("/games/tags?q=Action&limit=2")
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    assert "Action" in data
+    assert "Action RPG" in data
+
+def test_get_tags_returns_empty_list_when_no_match():
+    app.dependency_overrides[deps.get_session] = lambda: mock_session(rows=[])
+    response = client.get("/games/tags?q=NonexistentTag")
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    assert response.json() == []
+
+def test_get_tags_missing_query_param_returns_422():
+    response = client.get("/games/tags")
+    assert response.status_code == 422
+
+def test_get_tags_rejects_empty_query():
+    response = client.get("/games/tags?q=")
+    assert response.status_code == 422
+
+def test_get_tags_limit_above_max_returns_422():
+    response = client.get("/games/tags?q=Action&limit=999")
+    assert response.status_code == 422  
+
+def test_get_tags_limit_below_min_returns_422():
+    response = client.get("/games/tags?q=Action&limit=0")
+    assert response.status_code == 422
