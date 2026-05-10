@@ -310,6 +310,7 @@ source = { editable = "." }
 dependencies = [
     { name = "pgvector" },
     { name = "psycopg" },
+    { name = "pydantic-settings" },
     { name = "python-dotenv" },
     { name = "sqlmodel" },
 ]
@@ -344,6 +345,7 @@ requires-dist = [
     { name = "pandas", marker = "extra == 'pipeline'", specifier = "==2.3.3" },
     { name = "pgvector", specifier = "==0.4.2" },
     { name = "psycopg", specifier = "==3.3.2" },
+    { name = "pydantic-settings", specifier = "==2.13.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==9.0.2" },
     { name = "python-dotenv", specifier = "==1.2.1" },
     { name = "requests", marker = "extra == 'backend'" },

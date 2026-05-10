@@ -1,11 +1,8 @@
-import os
-
-from dotenv import load_dotenv
 from sqlmodel import Session, create_engine
 
-load_dotenv()
+from app.core.config import settings
 
-DATABASE_URL = os.environ["DATABASE_URL"].replace(
+DATABASE_URL = settings.database_url.replace(
     "postgresql://", "postgresql+psycopg://"
 )
 

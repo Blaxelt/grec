@@ -1,16 +1,13 @@
 import json
 import logging
-import os
-from pathlib import Path
 
 import numpy as np
 from scipy import sparse
 from implicit.cpu.als import AlternatingLeastSquares
 
-logger = logging.getLogger(__name__)
+from app.core.config import settings
 
-_PROJECT_ROOT = Path(__file__).resolve().parents[3]
-MODEL_DIR = Path(os.environ.get("CF_MODEL_DIR", _PROJECT_ROOT / "data" / "models" / "cf"))
+logger = logging.getLogger(__name__)
 
 class CFModel:
 
@@ -25,16 +22,16 @@ class CFModel:
     @property
     def available(self) -> bool:
         if self._available is None:
-            self._available = (MODEL_DIR / "model.npz").exists() and (MODEL_DIR / "metadata.json").exists()
+            self._available = (settings.cf_model_dir / "model.npz").exists() and (settings.cf_model_dir / "metadata.json").exists()
             if not self._available:
-                logger.warning("CF model artifacts not found at %s. CF recommendations disabled.", MODEL_DIR)
+                logger.warning("CF model artifacts not found at %s. CF recommendations disabled.", settings.cf_model_dir)
         return self._available
     
     def _load(self) -> None:
         """Load model and metadata from disk."""
-        logger.info("Loading CF model from %s", MODEL_DIR)
-        self._model = AlternatingLeastSquares.load(str(MODEL_DIR / "model.npz"))
-        with open(MODEL_DIR / "metadata.json") as f:
+        logger.info("Loading CF model from %s", settings.cf_model_dir)
+        self._model = AlternatingLeastSquares.load(str(settings.cf_model_dir / "model.npz"))
+        with open(settings.cf_model_dir / "metadata.json") as f:
             meta = json.load(f)
         self._item_id_to_idx = meta["item_id_to_idx"]
         self._idx_to_item_id = meta["idx_to_item_id"]

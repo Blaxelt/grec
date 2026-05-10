@@ -1,11 +1,12 @@
 from fastapi import APIRouter, HTTPException, Path
 import requests
-import os
+
+from app.core.config import settings
 from app.models import PlayedGameResponse
 
 router = APIRouter(prefix="/steam", tags=["steam"])
 
-STEAM_API_KEY = os.getenv("STEAM_API_KEY")
+STEAM_API_KEY = settings.steam_api_key
 
 @router.get("/library/{steam_id}", response_model=list[PlayedGameResponse])
 def get_library(
