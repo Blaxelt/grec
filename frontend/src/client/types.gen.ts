@@ -123,6 +123,30 @@ export type HttpValidationError = {
 };
 
 /**
+ * PaginatedGameTagResult
+ *
+ * Paginated response for tag-based game search.
+ */
+export type PaginatedGameTagResult = {
+    /**
+     * Items
+     */
+    items: Array<GameTagResult>;
+    /**
+     * Total
+     */
+    total: number;
+    /**
+     * Limit
+     */
+    limit: number;
+    /**
+     * Offset
+     */
+    offset: number;
+};
+
+/**
  * PlayedGameResponse
  *
  * A game played by a user fetched from Steam.
@@ -329,11 +353,9 @@ export type SearchGamesByTagsGamesByTagsGetError = SearchGamesByTagsGamesByTagsG
 
 export type SearchGamesByTagsGamesByTagsGetResponses = {
     /**
-     * Response Search Games By Tags Games By Tags Get
-     *
      * Successful Response
      */
-    200: Array<GameTagResult>;
+    200: PaginatedGameTagResult;
 };
 
 export type SearchGamesByTagsGamesByTagsGetResponse = SearchGamesByTagsGamesByTagsGetResponses[keyof SearchGamesByTagsGamesByTagsGetResponses];

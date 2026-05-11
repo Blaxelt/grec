@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select, case, func
 
 from app.api.deps import SessionDep
-from app.models import Game, GameDetail, GameSearchResult, GameRecommendation, GameTagResult
+from app.models import Game, GameDetail, GameSearchResult, GameRecommendation, GameTagResult, PaginatedGameTagResult
 
 from app.ml.cf_model import cf_model
 
@@ -47,7 +47,7 @@ def search_tags(
     rows = session.exec(stmt).all()
     return [tag for tag in rows]
 
-@router.get("/by-tags", response_model=list[GameTagResult])
+@router.get("/by-tags", response_model=PaginatedGameTagResult)
 def search_games_by_tags(
     session: SessionDep,
     tags: list[str] = Query(..., min_length=1, description="Tags to filter by"),
@@ -55,18 +55,20 @@ def search_games_by_tags(
     offset: int = Query(0, ge=0, description="Number of results to skip"),
 ):
     """Search games by tags (AND logic — games must have all selected tags)."""
-    stmt = (
-        select(Game.app_id, Game.game_name, Game.header_image, Game.tags, Game.wilson_score)
-        .where(Game.tags.contains(tags))
+    where = Game.tags.contains(tags)
+    total = session.exec(select(func.count()).select_from(Game).where(where)).one()
+    rows = session.exec(
+        select(Game.app_id, Game.game_name, Game.header_image, Game.tags)
+        .where(where)
         .order_by(Game.wilson_score.desc())
         .offset(offset)
         .limit(limit)
-    )
-    rows = session.exec(stmt).all()
-    return [
+    ).all()
+    items = [
         GameTagResult(app_id=app_id, game_name=name, header_image=header_image, tags=row_tags)
-        for app_id, name, header_image, row_tags, _score in rows
+        for app_id, name, header_image, row_tags in rows
     ]
+    return PaginatedGameTagResult(items=items, total=total, limit=limit, offset=offset)
 
 @router.get("/{app_id}", response_model=GameDetail)
 def get_game(session: SessionDep, app_id: int):

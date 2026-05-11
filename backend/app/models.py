@@ -86,3 +86,11 @@ class GameTagResult(SQLModel):
     game_name: str
     header_image: str | None
     tags: list[str]
+
+class PaginatedGameTagResult(SQLModel):
+    """Paginated response for tag-based game search."""
+
+    items: list[GameTagResult]
+    total: int
+    limit: int
+    offset: int
