@@ -224,6 +224,9 @@ def save_features(
                 f"combined_vector vector({vector_dim}), "
                 "wilson_score float)"
             )
+            cur.execute(
+                "CREATE INDEX IF NOT EXISTS idx_games_tags ON games USING GIN (tags)"
+            )
 
             data = [
                 (
