@@ -3,10 +3,10 @@ import { SearchBox } from "../components/SearchBox";
 import { TagSearchBox } from "../components/TagSearchBox";
 import { NavigationBar } from "../components/NavigationBar";
 import { GameCard } from "../components/GameCard";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { searchGamesGamesSearchGetOptions, searchGamesByTagsGamesByTagsGetOptions } from '../client/@tanstack/react-query.gen';
-import type { GameSearchResult, GameTagResult } from '../client';
+import { searchGamesGamesSearchGetOptions, searchGamesByTagsGamesByTagsGetInfiniteOptions } from '../client/@tanstack/react-query.gen';
+import type { GameSearchResult, PaginatedGameTagResult } from '../client';
 import { useDebouncedQuery } from '../hooks/useDebouncedQuery';
 
 const PAGE_SIZE = 10;
@@ -25,26 +25,35 @@ export default function SearchGame() {
     }
 
     const [selectedTags, setSelectedTags] = useState<string[]>([])
-    const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
     const addTag = (tag: string) => {
         setSelectedTags((prev) => [...prev, tag])
-        setVisibleCount(PAGE_SIZE)
     }
 
     const removeTag = (tag: string) => {
         setSelectedTags((prev) => prev.filter((t) => t !== tag))
-        setVisibleCount(PAGE_SIZE)
     }
 
-    const { data: tagResults = [], isFetching: isTagFetching } = useQuery({
-        ...searchGamesByTagsGamesByTagsGetOptions({
-            query: { tags: selectedTags, limit: visibleCount },
+    const {
+        data: tagPages,
+        isFetching: isTagFetching,
+        isFetchingNextPage: isFetchingNextPage,
+        hasNextPage,
+        fetchNextPage,
+    } = useInfiniteQuery({
+        ...searchGamesByTagsGamesByTagsGetInfiniteOptions({
+            query: { tags: selectedTags, limit: PAGE_SIZE },
         }),
+        initialPageParam: 0,
+        getNextPageParam: (lastPage: PaginatedGameTagResult) => {
+            const nextOffset = lastPage.offset + lastPage.limit;
+            return nextOffset < lastPage.total ? nextOffset : undefined;
+        },
         enabled: selectedTags.length > 0,
     })
 
-    const hasMore = tagResults.length === visibleCount
+    const tagResults = tagPages?.pages.flatMap((page) => page.items) ?? [];
+    const totalResults = tagPages?.pages[0]?.total ?? 0;
 
     return (
         <>
@@ -85,10 +94,10 @@ export default function SearchGame() {
                             {tagResults.length > 0 && (
                                 <>
                                     <p className="text-text-dim text-sm mb-3">
-                                        Showing {tagResults.length} game{tagResults.length !== 1 && 's'}
+                                        Showing {tagResults.length} of {totalResults} game{totalResults !== 1 && 's'}
                                     </p>
                                     <div className="flex flex-col gap-2">
-                                        {tagResults.map((game: GameTagResult) => (
+                                        {tagResults.map((game) => (
                                             <GameCard
                                                 key={game.app_id}
                                                 appId={game.app_id}
@@ -99,15 +108,15 @@ export default function SearchGame() {
                                         ))}
                                     </div>
 
-                                    {hasMore && (
+                                    {hasNextPage && (
                                         <button
-                                            onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-                                            disabled={isTagFetching}
+                                            onClick={() => fetchNextPage()}
+                                            disabled={isFetchingNextPage}
                                             className="mt-4 w-full py-2.5 rounded-lg border border-border bg-surface
                                                 hover:border-accent hover:text-accent transition-all cursor-pointer
                                                 disabled:opacity-50 disabled:cursor-wait font-medium"
                                         >
-                                            {isTagFetching ? 'Loading…' : 'Load more'}
+                                            {isFetchingNextPage ? 'Loading…' : 'Load more'}
                                         </button>
                                     )}
                                 </>
