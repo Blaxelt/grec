@@ -24,11 +24,18 @@ def make_game(**kwargs) -> Game:
     return Game(**defaults)
 
 
-def mock_session(rows=None, game=None):
+def mock_session(rows=None, game=None, total=None):
     """Return a MagicMock session pre-configured for the given scenario."""
     session = MagicMock()
-    session.exec.return_value.all.return_value = rows or []
     session.get.return_value = game
+    if total is not None:
+        count_result = MagicMock()
+        count_result.one.return_value = total
+        data_result = MagicMock()
+        data_result.all.return_value = rows or []
+        session.exec.side_effect = [count_result, data_result]
+    else:
+        session.exec.return_value.all.return_value = rows or []
     return session
 
 
@@ -175,33 +182,37 @@ def test_get_tags_limit_below_min_returns_422():
 
 def test_get_by_tags_returns_games():
     app.dependency_overrides[deps.get_session] = lambda: mock_session(rows=[
-        (1, "Dark Souls", "https://example.com/ds.jpg", ["Action", "RPG"], 0.95),
-        (2, "Elden Ring", "https://example.com/er.jpg", ["Action", "RPG", "Open World"], 0.92),
-    ])
+        (1, "Dark Souls", "https://example.com/ds.jpg", ["Action", "RPG"]),
+        (2, "Elden Ring", "https://example.com/er.jpg", ["Action", "RPG", "Open World"]),
+    ], total=2)
     response = client.get("/games/by-tags?tags=Action&tags=RPG&limit=2")
     app.dependency_overrides.clear()
 
     assert response.status_code == 200
     data = response.json()
-    assert isinstance(data, list)
-    assert len(data) == 2
-    assert data[0]["app_id"] == 1
-    assert data[0]["game_name"] == "Dark Souls"
-    assert data[0]["header_image"] == "https://example.com/ds.jpg"
-    assert data[0]["tags"] == ["Action", "RPG"]
-    assert data[1]["app_id"] == 2
-    assert data[1]["game_name"] == "Elden Ring"
-    assert data[1]["header_image"] == "https://example.com/er.jpg"
-    assert data[1]["tags"] == ["Action", "RPG", "Open World"]
+    assert data["total"] == 2
+    assert data["limit"] == 2
+    assert data["offset"] == 0
+    assert len(data["items"]) == 2
+    assert data["items"][0]["app_id"] == 1
+    assert data["items"][0]["game_name"] == "Dark Souls"
+    assert data["items"][0]["header_image"] == "https://example.com/ds.jpg"
+    assert data["items"][0]["tags"] == ["Action", "RPG"]
+    assert data["items"][1]["app_id"] == 2
+    assert data["items"][1]["game_name"] == "Elden Ring"
+    assert data["items"][1]["header_image"] == "https://example.com/er.jpg"
+    assert data["items"][1]["tags"] == ["Action", "RPG", "Open World"]
 
 
 def test_get_by_tags_returns_empty_list_when_no_match():
-    app.dependency_overrides[deps.get_session] = lambda: mock_session(rows=[])
+    app.dependency_overrides[deps.get_session] = lambda: mock_session(rows=[], total=0)
     response = client.get("/games/by-tags?tags=NonexistentTag")
     app.dependency_overrides.clear()
 
     assert response.status_code == 200
-    assert response.json() == []
+    data = response.json()
+    assert data["items"] == []
+    assert data["total"] == 0
 
 
 def test_get_by_tags_missing_tags_param_returns_422():
@@ -226,11 +237,11 @@ def test_get_by_tags_offset_negative_returns_422():
 
 def test_get_by_tags_header_image_none():
     app.dependency_overrides[deps.get_session] = lambda: mock_session(rows=[
-        (3, "Some Game", None, ["Action"], 0.88),
-    ])
+        (3, "Some Game", None, ["Action"]),
+    ], total=1)
     response = client.get("/games/by-tags?tags=Action")
     app.dependency_overrides.clear()
 
     assert response.status_code == 200
     data = response.json()
-    assert data[0]["header_image"] is None
+    assert data["items"][0]["header_image"] is None
