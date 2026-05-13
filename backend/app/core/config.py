@@ -11,7 +11,6 @@ class Settings(BaseSettings):
     cors_origin: str = "http://localhost:5173"
     cf_model_dir: Path = _PROJECT_ROOT / "data" / "models" / "cf"
 
-    model_config = SettingsConfigDict(env_file=".env")
-
+    model_config = SettingsConfigDict(env_file=_PROJECT_ROOT / ".env", extra="ignore")
 
 settings = Settings()
