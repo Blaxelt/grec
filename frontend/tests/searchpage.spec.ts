@@ -111,7 +111,7 @@ test.describe('Search Page', () => {
 
     // seed has Recommendation 0–11 with tag RPG → expect result cards
     await expect(page.getByTestId('result-card').first()).toBeVisible();
-    await expect(page.getByText(/Showing \d+ game/)).toBeVisible();
+    await expect(page.getByText(/Showing \d+ of \d+ game/)).toBeVisible();
   });
 
   test('clicking a tag result navigates to game page', async ({ page }) => {
