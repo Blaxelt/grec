@@ -90,7 +90,7 @@ def test_get_profile_recommendations():
     fake_games = {i: make_fake_game(i) for i in [1, 2]}
 
     mock_session = MagicMock()
-    mock_session.get.side_effect = lambda model, app_id: fake_games.get(app_id)
+    mock_session.exec.return_value.all.return_value = list(fake_games.values())
 
     app.dependency_overrides[get_session] = lambda: mock_session
 
@@ -141,7 +141,7 @@ def test_get_profile_recommendations_skips_missing_db_games():
     fake_games = {1: make_fake_game(1)}
 
     mock_session = MagicMock()
-    mock_session.get.side_effect = lambda model, app_id: fake_games.get(app_id)
+    mock_session.exec.return_value.all.return_value = list(fake_games.values())
 
     app.dependency_overrides[get_session] = lambda: mock_session
 

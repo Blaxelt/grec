@@ -5,6 +5,7 @@ from app.api.deps import SessionDep
 from app.models import Game, GameDetail, GameSearchResult, GameRecommendation, GameTagResult, PaginatedGameTagResult
 
 from app.ml.cf_model import cf_model
+from app.ml.recommender import build_recommendations_from_cf
 
 router = APIRouter(prefix="/games", tags=["games"])
 
@@ -78,20 +79,7 @@ def get_game(session: SessionDep, app_id: int):
         raise HTTPException(status_code=404, detail="Game not found")
 
     cf_results = cf_model.recommend([app_id], [20], 10)
-
-    rec_app_ids = [rec_id for rec_id, _ in cf_results]
-    rec_games = session.exec(select(Game).where(Game.app_id.in_(rec_app_ids))).all()
-    scores = {rec_id: score for rec_id, score in cf_results}
-
-    other_games_recommendations = [
-        GameRecommendation(
-            app_id=g.app_id,
-            game_name=g.game_name,
-            header_image=g.header_image,
-            hybrid_score=scores[g.app_id],
-        )
-        for g in rec_games
-    ]
+    other_games_recommendations = build_recommendations_from_cf(session, cf_results)
 
     return GameDetail(
         app_id=game.app_id,

@@ -1,9 +1,48 @@
+import logging
+
 from sqlalchemy import func
 from sqlmodel import Session, select
 
 from app.models import Game, GameRecommendation
 from app.ml.cf_model import cf_model
-    
+
+logger = logging.getLogger(__name__)
+
+
+def build_recommendations_from_cf(
+    session: Session,
+    cf_results: list[tuple[int, float]],
+) -> list[GameRecommendation]:
+    """Build GameRecommendation objects from CF model results, batch-fetching metadata."""
+    if not cf_results:
+        return []
+
+    scores = dict(cf_results)
+    app_ids = list(scores.keys())
+
+    games = session.exec(
+        select(Game).where(Game.app_id.in_(app_ids))
+    ).all()
+
+    game_map = {g.app_id: g for g in games}
+
+    recommendations = []
+    for app_id, score in cf_results:
+        game = game_map.get(app_id)
+        if game is None:
+            logger.warning("CF model recommended app_id %s not found in DB - skipping.", app_id)
+            continue
+        recommendations.append(
+            GameRecommendation(
+                app_id=game.app_id,
+                game_name=game.game_name,
+                header_image=game.header_image,
+                hybrid_score=score,
+            )
+        )
+    return recommendations
+
+
 class GameRecommender:
 
     def __init__(self) -> None:
@@ -21,25 +60,6 @@ class GameRecommender:
         """
         Find similar games using a union-based hybrid of content-based and
         collaborative filtering.
-
-        1. Fetch top-K from CBF (pgvector cosine sim × wilson_score^quality_power)
-        2. Fetch top-K from CF  (ALS recalculate_user, rank-based score)
-        3. Union both sets; fill missing scores with 0
-        4. Min-max normalise each signal to [0, 1]
-        5. Hybrid = (1 − cf_weight) · norm_CBF + cf_weight · norm_CF
-        6. Rank and return final top_n
-
-        Args:
-            session: Database session.
-            game_name: Name of the target game.
-            top_n: Number of results to return.
-            quality_power: Exponent for Wilson score influence (default 1.0).
-            hours_played: Hypothetical hours played (default 20.0).
-            cf_weight: Weight of the CF score in the final blend
-                       (0 → pure CBF, 1 → pure CF). Default 0.3.
-
-        Returns:
-            Tuple of (target_game_name, recommendations), or None if not found.
         """
         # Look up target game
         stmt = select(Game).where(func.lower(Game.game_name) == game_name.strip().lower())
