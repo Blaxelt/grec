@@ -17,10 +17,10 @@
 }
 
 [data-theme="light"] {
-  --color-bg: #ffffff;
-  --color-surface: #e9d51c;
-  --color-border: #e9d51c;
+  --color-bg: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-border: #dee2e6;
   --color-text: #1b1a1a;
-  --color-text-dim: #434443;
-  --color-accent: #d66524;
+  --color-text-dim: #6c757d;
+  --color-accent: #4f46e5;
 }
