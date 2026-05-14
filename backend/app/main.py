@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import games, recommendations, steam
+from app.api.routes import games, health, recommendations, steam
 from app.core.config import settings
 from app.ml.cf_model import cf_model
 
@@ -26,10 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(health.router)
 app.include_router(games.router)
 app.include_router(recommendations.router)
 app.include_router(steam.router)
-
-@app.get("/health", tags=["health"])
-def health_check():
-    return {"status": "ok"}
