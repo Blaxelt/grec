@@ -12,6 +12,7 @@ type Props = {
 export function TagSearchBox({ selectedTags, onAddTag, onRemoveTag }: Props) {
     const { query, setQuery, debouncedQuery } = useDebouncedQuery()
     const [isFocused, setIsFocused] = useState(false)
+    const [activeIndex, setActiveIndex] = useState(-1)
 
     const { data: suggestions = [] } = useQuery({
         ...searchTagsGamesTagsGetOptions({ query: { q: debouncedQuery } }),
@@ -22,9 +23,37 @@ export function TagSearchBox({ selectedTags, onAddTag, onRemoveTag }: Props) {
         (tag) => !selectedTags.includes(tag)
     )
 
-    const handleSelect = (tag: string) => {
-        onAddTag(tag)
-        setQuery('')
+    const isOpen = isFocused && query.length > 0 && filteredSuggestions.length > 0
+
+    const handleSelect = (index: number) => {
+        if (index >= 0 && index < filteredSuggestions.length) {
+            onAddTag(filteredSuggestions[index])
+            setQuery('')
+            setActiveIndex(-1)
+        }
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (!isOpen) return
+
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault()
+                setActiveIndex((i) => (i + 1) % filteredSuggestions.length)
+                break
+            case 'ArrowUp':
+                e.preventDefault()
+                setActiveIndex((i) => (i - 1 + filteredSuggestions.length) % filteredSuggestions.length)
+                break
+            case 'Enter':
+                e.preventDefault()
+                handleSelect(activeIndex)
+                break
+            case 'Escape':
+                setIsFocused(false)
+                setActiveIndex(-1)
+                break
+        }
     }
 
     return (
@@ -55,21 +84,39 @@ export function TagSearchBox({ selectedTags, onAddTag, onRemoveTag }: Props) {
                     type="text"
                     placeholder="Search for tags... (e.g. Action, RPG, Multiplayer)"
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    onChange={(e) => {
+                        setQuery(e.target.value)
+                        setActiveIndex(-1)
+                    }}
                     onFocus={() => setIsFocused(true)}
-                    onBlur={() => setTimeout(() => setIsFocused(false), 150)}
+                    onBlur={() => setTimeout(() => { setIsFocused(false); setActiveIndex(-1) }, 100)}
+                    onKeyDown={handleKeyDown}
+                    role="combobox"
+                    aria-expanded={isOpen}
+                    aria-controls="tag-suggestions"
+                    aria-activedescendant={activeIndex >= 0 ? `tag-suggestion-${activeIndex}` : undefined}
+                    aria-autocomplete="list"
                     className="bg-surface w-full border border-border rounded-lg p-2.5 outline-none
                         focus:border-accent hover:border-accent placeholder:text-text-dim"
                 />
 
-                {isFocused && query.length > 0 && filteredSuggestions.length > 0 && (
-                    <ul className="absolute left-0 right-0 top-[calc(100%+4px)] bg-surface border border-border
-                        rounded-lg z-10 overflow-hidden max-h-60 overflow-y-auto">
-                        {filteredSuggestions.map((tag) => (
-                            <li key={tag}>
+                {isOpen && (
+                    <ul
+                        id="tag-suggestions"
+                        role="listbox"
+                        className="absolute left-0 right-0 top-[calc(100%+4px)] bg-surface border border-border
+                            rounded-lg z-10 overflow-hidden max-h-60 overflow-y-auto"
+                    >
+                        {filteredSuggestions.map((tag, i) => (
+                            <li
+                                key={tag}
+                                id={`tag-suggestion-${i}`}
+                                role="option"
+                                aria-selected={i === activeIndex}
+                            >
                                 <button
-                                    onClick={() => handleSelect(tag)}
-                                    className="cursor-pointer w-full text-left hover:bg-accent p-2.5 transition-colors"
+                                    onClick={() => handleSelect(i)}
+                                    className={`cursor-pointer w-full text-left p-2.5 transition-colors ${i === activeIndex ? 'bg-accent' : 'hover:bg-accent'}`}
                                 >
                                     {tag}
                                 </button>
