@@ -30,7 +30,7 @@ test.describe('Homepage', () => {
   test('similar results', async ({ page }) => {
     await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
     await expect(page.getByTestId('suggestions')).toBeVisible();
-    await page.getByRole('listitem').first().click();
+    await page.getByRole('option').first().click();
 
     await expect(page.getByTestId('results-list')).toBeVisible();
     const cards = page.getByTestId('results-list').getByTestId('result-card');
@@ -44,7 +44,7 @@ test.describe('Homepage', () => {
   test('filter changes result count', async ({ page }) => {
     await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
     await expect(page.getByTestId('suggestions')).toBeVisible();
-    await page.getByRole('listitem').first().click();
+    await page.getByRole('option').first().click();
     await expect(page.getByTestId('results-list')).toBeVisible();
 
     await page.getByRole('button', { name: '⚙' }).click();
@@ -62,7 +62,7 @@ test.describe('Homepage', () => {
   test('filter changes review quality weight', async ({ page }) => {
     await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
     await expect(page.getByTestId('suggestions')).toBeVisible();
-    await page.getByRole('listitem').first().click();
+    await page.getByRole('option').first().click();
     await expect(page.getByTestId('results-list')).toBeVisible();
     const cards = page.getByTestId('results-list').getByTestId('result-card');
     await expect(cards).toHaveCount(10);
@@ -82,7 +82,7 @@ test.describe('Homepage', () => {
   test('go to game details page', async ({ page }) => {
     await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
     await expect(page.getByTestId('suggestions')).toBeVisible();
-    await page.getByRole('listitem').first().click();
+    await page.getByRole('option').first().click();
 
     await expect(page.getByTestId('results-list')).toBeVisible();
     const cards = page.getByTestId('results-list').getByTestId('result-card');

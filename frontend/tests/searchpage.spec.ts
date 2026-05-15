@@ -30,7 +30,7 @@ test.describe('Search Page', () => {
   test('search game', async ({ page }) => {
     await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
     await expect(page.getByTestId('suggestions')).toBeVisible();
-    await page.getByRole('listitem').first().click();
+    await page.getByRole('option').first().click();
 
     await expect(page).toHaveURL('/games/1245620');
   });
@@ -82,13 +82,13 @@ test.describe('Search Page', () => {
     const tagInput = page.getByPlaceholder(/Search for tags/);
     await tagInput.fill('RPG');
 
-    await expect(page.getByRole('listitem').filter({ hasText: /^RPG$/ })).toBeVisible();
+    await expect(page.getByRole('option').filter({ hasText: /^RPG$/ })).toBeVisible();
   });
 
   test('selecting a tag adds a chip', async ({ page }) => {
     const tagInput = page.getByPlaceholder(/Search for tags/);
     await tagInput.fill('RPG');
-    await page.getByRole('listitem').filter({ hasText: /^RPG$/ }).click();
+    await page.getByRole('option').filter({ hasText: /^RPG$/ }).click();
 
     await expect(page.getByText('RPG').first()).toBeVisible();
     await expect(page.getByRole('button', { name: /Remove RPG/ })).toBeVisible();
@@ -97,7 +97,7 @@ test.describe('Search Page', () => {
   test('removing a tag chip removes it', async ({ page }) => {
     const tagInput = page.getByPlaceholder(/Search for tags/);
     await tagInput.fill('RPG');
-    await page.getByRole('listitem').filter({ hasText: /^RPG$/ }).click();
+    await page.getByRole('option').filter({ hasText: /^RPG$/ }).click();
     await expect(page.getByRole('button', { name: /Remove RPG/ })).toBeVisible();
 
     await page.getByRole('button', { name: /Remove RPG/ }).click();
@@ -107,7 +107,7 @@ test.describe('Search Page', () => {
   test('tag search shows game results', async ({ page }) => {
     const tagInput = page.getByPlaceholder(/Search for tags/);
     await tagInput.fill('RPG');
-    await page.getByRole('listitem').filter({ hasText: /^RPG$/ }).click();
+    await page.getByRole('option').filter({ hasText: /^RPG$/ }).click();
 
     // seed has Recommendation 0–11 with tag RPG → expect result cards
     await expect(page.getByTestId('result-card').first()).toBeVisible();
@@ -117,7 +117,7 @@ test.describe('Search Page', () => {
   test('clicking a tag result navigates to game page', async ({ page }) => {
     const tagInput = page.getByPlaceholder(/Search for tags/);
     await tagInput.fill('RPG');
-    const tagOption = page.getByRole('listitem').filter({ hasText: /^RPG$/ });
+    const tagOption = page.getByRole('option').filter({ hasText: /^RPG$/ });
     await expect(tagOption).toBeVisible();
     await tagOption.click();
 

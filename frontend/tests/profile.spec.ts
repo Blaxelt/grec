@@ -41,7 +41,7 @@ test.describe('Profile', () => {
     test('add a game from suggestions', async ({ page }) => {
         await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
         await expect(page.getByTestId('suggestions')).toBeVisible();
-        await page.getByRole('listitem').first().click();
+        await page.getByRole('option').first().click();
 
         await expect(page.getByText('Games played')).toBeVisible();
         await expect(page.getByRole('link', { name: /elden ring/i })).toBeVisible();
@@ -50,7 +50,7 @@ test.describe('Profile', () => {
     test('remove a game from the list', async ({ page }) => {
         await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
         await expect(page.getByTestId('suggestions')).toBeVisible();
-        await page.getByRole('listitem').first().click();
+        await page.getByRole('option').first().click();
         await expect(page.getByRole('link', { name: /elden ring/i })).toBeVisible();
 
         await page.getByRole('button', { name: /Remove/i }).click();
@@ -60,7 +60,7 @@ test.describe('Profile', () => {
     test('edit hours for a game', async ({ page }) => {
         await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
         await expect(page.getByTestId('suggestions')).toBeVisible();
-        await page.getByRole('listitem').first().click();
+        await page.getByRole('option').first().click();
 
         const hoursInput = page.getByRole('spinbutton');
         await hoursInput.fill('42');
@@ -70,7 +70,7 @@ test.describe('Profile', () => {
     test('shows Get Recommendations button after adding a game', async ({ page }) => {
         await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
         await expect(page.getByTestId('suggestions')).toBeVisible();
-        await page.getByRole('listitem').first().click();
+        await page.getByRole('option').first().click();
 
         await expect(page.getByRole('button', { name: 'Get Recommendations' })).toBeVisible();
     });
@@ -80,7 +80,7 @@ test.describe('Profile', () => {
 
         await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
         await expect(page.getByTestId('suggestions')).toBeVisible();
-        await page.getByRole('listitem').first().click();
+        await page.getByRole('option').first().click();
 
         await expect(page.getByText('Search and add games above to build your profile.')).not.toBeVisible();
     });
@@ -103,7 +103,7 @@ test.describe('Profile', () => {
 
         await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
         await expect(page.getByTestId('suggestions')).toBeVisible();
-        await page.getByRole('listitem').first().click();
+        await page.getByRole('option').first().click();
 
         await page.getByRole('button', { name: 'Get Recommendations' }).click();
 
@@ -130,7 +130,7 @@ test.describe('Profile', () => {
 
         await page.getByPlaceholder('Search for a game...').fill('ELDEN RING');
         await expect(page.getByTestId('suggestions')).toBeVisible();
-        await page.getByRole('listitem').first().click();
+        await page.getByRole('option').first().click();
         await page.getByRole('button', { name: 'Get Recommendations' }).click();
 
         await expect(page.getByText('Mocked Recommended Game')).toBeVisible();
