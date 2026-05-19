@@ -6,8 +6,6 @@ services:
       dockerfile: frontend/Dockerfile
       args:
         VITE_API_URL: /api
-    ports:
-      - "80:80"
     depends_on:
       - backend
 
@@ -15,8 +13,6 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    ports:
-      - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://grec:grec@db:5432/grec
       - CF_MODEL_DIR=/app/models/cf
