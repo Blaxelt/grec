@@ -37,9 +37,9 @@ export default function HomePage() {
     return (
         <>
             <NavigationBar />
-            <div className="flex flex-col items-center h-screen pt-20">
-                <h1 className='font-press text-8xl tracking-wider'>GREC</h1>
-                <p className="pt-5 mb-10 tracking-normal">Game Recommendation System</p>
+            <div className="flex flex-col items-center min-h-[calc(100dvh-3.5rem)] pt-16 sm:pt-20 px-4">
+                <h1 className='font-press text-5xl sm:text-7xl md:text-8xl tracking-wider'>GREC</h1>
+                <p className="pt-5 mb-6 sm:mb-10 tracking-normal text-center">Game Recommendation System</p>
 
                 <div className="flex items-center gap-2 w-full max-w-2xl">
                     <SearchBox
