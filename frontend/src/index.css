@@ -12,8 +12,6 @@
   --color-text: #e5e5e5;
   --color-text-dim: #888;
   --color-accent: #646cff;
-
-  --grid-template-columns-screenshots: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 [data-theme="light"] {

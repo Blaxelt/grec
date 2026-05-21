@@ -22,10 +22,10 @@ export default function GamePage() {
     return (
         <>
             <NavigationBar />
-            <div className="flex flex-col p-10" >
-                <h1 className="text-3xl font-semibold">{game.game_name}</h1>
-                <div className="flex flex-col md:flex-row gap-6 mt-6 h-52">
-                    <img className="rounded-xl shadow-lg shadow-black/50" src={game.header_image ?? undefined} alt='No header image available' />
+            <div className="flex flex-col p-4 sm:p-6 md:p-10">
+                <h1 className="text-2xl sm:text-3xl font-semibold">{game.game_name}</h1>
+                <div className="flex flex-col md:flex-row gap-6 mt-6">
+                    <img className="rounded-xl shadow-lg shadow-black/50 w-full md:w-auto md:max-w-md object-cover" src={game.header_image ?? undefined} alt='No header image available' />
 
                     <div className="flex flex-col gap-4 overflow-y-auto pr-2" data-testid="game-desc">
                         <p>{game.short_description}</p>
@@ -57,7 +57,7 @@ export default function GamePage() {
                 {(game.screenshots ?? []).length > 0 && (
                     <div className="mt-9">
                         <h2 className="mb-3 font-semibold text-xl">Screenshots</h2>
-                        <div className="grid grid-cols-screenshots gap-3">
+                        <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-3">
                             {(game.screenshots ?? []).map((url, i) => (
                                 <img
                                     key={i}
@@ -74,7 +74,7 @@ export default function GamePage() {
                 {(game.other_players_also_played ?? []).length > 0 && (
                     <div className="mt-9" data-testid="recommendations">
                         <h2 className="mb-3 font-semibold text-xl">Other players also played</h2>
-                        <div className="grid grid-cols-screenshots gap-3">
+                        <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-3">
                             {(game.other_players_also_played ?? []).map((rec) => (
                                 <GameCard
                                     key={rec.app_id}
