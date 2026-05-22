@@ -82,7 +82,7 @@ export function TagSearchBox({ selectedTags, onAddTag, onRemoveTag }: Props) {
             <div className="relative w-full">
                 <input
                     type="text"
-                    placeholder="Search for tags... (e.g. Action, RPG, Multiplayer)"
+                    placeholder="Search for tags... (e.g. Action, RPG...)"
                     value={query}
                     onChange={(e) => {
                         setQuery(e.target.value)

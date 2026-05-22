@@ -58,9 +58,9 @@ export default function SearchGame() {
     return (
         <>
             <NavigationBar />
-            <div className="flex flex-col gap-4 pt-24 w-full max-w-3xl mx-auto px-4 pb-16">
+            <div className="flex flex-col gap-4 pt-16 sm:pt-20 md:pt-24 w-full max-w-3xl mx-auto px-4 pb-16">
                 <section>
-                    <h1 className="font-press text-3xl tracking-wider text-center mb-8">Search</h1>
+                    <h1 className="font-press text-2xl sm:text-3xl tracking-wider text-center mb-6 sm:mb-8">Search</h1>
                     <SearchBox
                         query={query}
                         onQueryChange={setQuery}
