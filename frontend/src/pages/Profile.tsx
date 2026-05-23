@@ -15,10 +15,10 @@ import { SITE_URL, SITE_NAME } from "../lib/seo"
 
 export default function Profile() {
     useHead({
-        title: `Your Profile — ${SITE_NAME}`,
+        title: `Your Profile - ${SITE_NAME}`,
         meta: [
             { name: 'description', content: 'Build your game profile and get personalized recommendations' },
-            { property: 'og:title', content: `Your Profile — ${SITE_NAME}` },
+            { property: 'og:title', content: `Your Profile - ${SITE_NAME}` },
             { property: 'og:description', content: 'Build your game profile and get personalized recommendations' },
             { property: 'og:url', content: `${SITE_URL}/profile` },
             { property: 'og:site_name', content: SITE_NAME },

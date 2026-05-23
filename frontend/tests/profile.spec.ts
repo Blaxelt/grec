@@ -8,7 +8,7 @@ test.describe('Profile', () => {
     });
 
     test('has title', async ({ page }) => {
-        await expect(page).toHaveTitle("Your Profile — GREC");
+        await expect(page).toHaveTitle("Your Profile - GREC");
     });
 
     test('has heading', async ({ page }) => {

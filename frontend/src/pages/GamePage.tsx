@@ -19,7 +19,7 @@ export default function GamePage() {
     const canonicalUrl = id ? `${SITE_URL}/games/${id}` : SITE_URL
 
     useHead(game ? {
-        title: `${game.game_name} — ${SITE_NAME}`,
+        title: `${game.game_name} - ${SITE_NAME}`,
         meta: [
             { name: 'description', content: game.short_description },
             { property: 'og:title', content: game.game_name },
@@ -62,7 +62,7 @@ export default function GamePage() {
             },
         ],
     } : {
-        title: `Game — ${SITE_NAME}`,
+        title: `Game - ${SITE_NAME}`,
         link: [{ rel: 'canonical', href: canonicalUrl }],
     })
 

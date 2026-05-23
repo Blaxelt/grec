@@ -15,10 +15,10 @@ import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '../lib/seo'
 
 export default function HomePage() {
     useHead({
-        title: `${SITE_NAME} — Game Recommendations`,
+        title: `${SITE_NAME} - Game Recommendations`,
         meta: [
             { name: 'description', content: SITE_DESCRIPTION },
-            { property: 'og:title', content: `${SITE_NAME} — Game Recommendations` },
+            { property: 'og:title', content: `${SITE_NAME} - Game Recommendations` },
             { property: 'og:description', content: SITE_DESCRIPTION },
             { property: 'og:url', content: SITE_URL },
             { property: 'og:site_name', content: SITE_NAME },

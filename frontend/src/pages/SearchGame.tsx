@@ -15,10 +15,10 @@ const PAGE_SIZE = 10;
 
 export default function SearchGame() {
     useHead({
-        title: `Search Games — ${SITE_NAME}`,
+        title: `Search Games - ${SITE_NAME}`,
         meta: [
             { name: 'description', content: 'Search and browse games by name or tags' },
-            { property: 'og:title', content: `Search Games — ${SITE_NAME}` },
+            { property: 'og:title', content: `Search Games - ${SITE_NAME}` },
             { property: 'og:description', content: 'Search and browse games by name or tags' },
             { property: 'og:url', content: `${SITE_URL}/search` },
             { property: 'og:site_name', content: SITE_NAME },
