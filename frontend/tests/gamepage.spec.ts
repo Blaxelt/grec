@@ -6,7 +6,7 @@ test.describe('Gamepage', () => {
   });
 
   test('has title', async ({ page }) => {
-    await expect(page).toHaveTitle("Grec");
+    await expect(page).toHaveTitle("DARK SOULS — GREC");
   });
 
   test('has correct game name', async ({ page }) => {

@@ -6,7 +6,7 @@ test.describe('Homepage', () => {
   });
 
   test('has title', async ({ page }) => {
-    await expect(page).toHaveTitle("Grec");
+    await expect(page).toHaveTitle("GREC — Game Recommendations");
   });
 
   test('has heading', async ({ page }) => {

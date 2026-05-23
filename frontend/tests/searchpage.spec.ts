@@ -6,7 +6,7 @@ test.describe('Search Page', () => {
   });
 
   test('has title', async ({ page }) => {
-    await expect(page).toHaveTitle("Grec");
+    await expect(page).toHaveTitle("Search Games — GREC");
   });
 
   test('has heading', async ({ page }) => {
