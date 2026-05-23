@@ -67,7 +67,7 @@ test.describe('Homepage', () => {
     const cards = page.getByTestId('results-list').getByTestId('result-card');
     await expect(cards).toHaveCount(10);
 
-    const firstGameDefault = await cards.last().textContent();
+    const defaultTitles = await cards.allTextContents();
     await page.getByRole('button', { name: '⚙' }).click();
 
     const qualitySlider = page.getByLabel('Review Quality Weight');
@@ -76,7 +76,8 @@ test.describe('Homepage', () => {
       await page.keyboard.press('ArrowRight');
     }
     await page.getByRole('button', { name: 'Apply' }).click();
-    await expect(cards.last()).not.toHaveText(firstGameDefault as string);
+    const newTitles = await cards.allTextContents();
+    expect(newTitles).not.toEqual(defaultTitles);
   });
 
   test('go to game details page', async ({ page }) => {
