@@ -52,9 +52,9 @@ export function GameCard({ appId, gameName, headerImage, score, tags, variant = 
                     </div>
                 )}
             </div>
-            {score !== undefined && (
+            {/* {score !== undefined && (
                 <span className="ml-auto mr-1.5 text-accent shrink-0 text-sm sm:text-base">{(score * 100).toFixed(1)}%</span>
-            )}
+            )} */}
         </Link>
     )
 }
