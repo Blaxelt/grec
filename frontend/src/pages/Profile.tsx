@@ -42,7 +42,7 @@ export default function Profile() {
         reset()
     }
 
-    // ── Recommendations ──
+    // Recommendations
     const { mutate, reset, data: recData, isPending, isError } = useMutation(
         getProfileRecommendationsRecommendProfilePostMutation()
     )
@@ -77,13 +77,14 @@ export default function Profile() {
             <NavigationBar />
             <div className="flex flex-col p-10 max-w-4xl mx-auto">
                 <h1 className="text-3xl font-semibold mb-8">My Game Profile</h1>
-                <div className="flex gap-4 mb-8">
-                    <input className="border border-border rounded bg-surface px-2 py-1 text-text outline-none focus:border-accent hover:border-accent transition-colors"
+                <p className="text-text-dim mb-4">Enter your Steam user ID to fetch your library games (must be public).</p>
+                <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                    <input className="border border-border rounded-lg bg-surface p-2.5 text-text outline-none focus:border-accent hover:border-accent transition-colors"
                         type="text"
                         value={steamId}
                         onChange={(e) => setSteamId(e.target.value)}
                         placeholder="Steam user ID" />
-                    <button className="bg-accent text-white rounded px-2 py-1 cursor-pointer hover:bg-accent/80 transition-colors"
+                    <button className="bg-accent text-white rounded px-6 py-2.5 cursor-pointer hover:bg-accent/80 transition-colors"
                         onClick={() => fetchPlayedGames()}>Fetch library games</button>
                 </div>
 
@@ -96,6 +97,7 @@ export default function Profile() {
                 )}
 
                 <div className="mb-8">
+                    <h2 className="text-lg font-medium text-text-dim mb-3">Add games to your profile</h2>
                     <SearchBox
                         query={query}
                         onQueryChange={setQuery}
@@ -140,25 +142,27 @@ export default function Profile() {
                                 </div>
                             ))}
                         </div>
-
-                        <button
-                            onClick={fetchRecommendations}
-                            disabled={isPending}
-                            className="mt-4 px-6 py-2.5 bg-accent text-white rounded-lg font-medium
-                                       hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer"
-                        >
-                            {isPending ? "Loading…" : "Get Recommendations"}
-                        </button>
-
-                        <button
-                            onClick={clearProfile}
-                            className="ml-4 mt-4 px-6 py-2.5 bg-accent text-white rounded-lg font-medium
-                                       hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer"
-                        >
-                            Clear Profile
-                        </button>
                     </div>
                 )}
+
+                <div className="mt-2 flex flex-col sm:flex-row gap-4">
+                    <button
+                        onClick={fetchRecommendations}
+                        disabled={isPending}
+                        className="px-6 py-2.5 bg-accent text-white rounded-lg font-medium
+                                    hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer"
+                    >
+                        {isPending ? "Loading…" : "Get Recommendations"}
+                    </button>
+
+                    <button
+                        onClick={clearProfile}
+                        className="px-6 py-2.5 bg-accent text-white rounded-lg font-medium
+                                    hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer"
+                    >
+                        Clear Profile
+                    </button>
+                </div>
 
                 {savedGames.length === 0 && (
                     <p className="text-text-dim text-center mt-8">Search and add games above to build your profile.
@@ -172,7 +176,7 @@ export default function Profile() {
                 )}
 
                 {recommendations.length > 0 && (
-                    <div className="mt-2">
+                    <div className="mt-6">
                         <h2 className="text-lg font-medium text-text-dim mb-3">Recommended for you</h2>
                         <div className="flex flex-col gap-2">
                             {recommendations.map((rec) => (
