@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useHead } from '@unhead/react'
 import {
     searchGamesGamesSearchGetOptions,
     getRecommendationsRecommendGetOptions,
@@ -10,8 +11,23 @@ import { Filter } from '../components/Filter'
 import { NavigationBar } from '../components/NavigationBar'
 import type { GameSearchResult } from '../client'
 import { useDebouncedQuery } from '../hooks/useDebouncedQuery'
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '../lib/seo'
 
 export default function HomePage() {
+    useHead({
+        title: `${SITE_NAME} — Game Recommendations`,
+        meta: [
+            { name: 'description', content: SITE_DESCRIPTION },
+            { property: 'og:title', content: `${SITE_NAME} — Game Recommendations` },
+            { property: 'og:description', content: SITE_DESCRIPTION },
+            { property: 'og:url', content: SITE_URL },
+            { property: 'og:site_name', content: SITE_NAME },
+            { property: 'og:type', content: 'website' },
+        ],
+        link: [
+            { rel: 'canonical', href: SITE_URL },
+        ],
+    })
     const [selectedGame, setSelectedGame] = useState('')
     const [topN, setTopN] = useState(10)
     const [qualityPower, setQualityPower] = useState(1.0)

@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Link } from "react-router-dom"
+import { useHead } from "@unhead/react"
 import { NavigationBar } from "../components/NavigationBar"
 import { SearchBox } from "../components/SearchBox"
 import { GameCard } from "../components/GameCard"
@@ -9,9 +10,25 @@ import { useProfileGames } from "../hooks/useProfileGames"
 import { useDebouncedQuery } from "../hooks/useDebouncedQuery"
 import { useState, useEffect } from "react"
 import { getLibrarySteamLibrarySteamIdGetOptions } from "../client/@tanstack/react-query.gen"
+import { SITE_URL, SITE_NAME } from "../lib/seo"
 
 
 export default function Profile() {
+    useHead({
+        title: `Your Profile — ${SITE_NAME}`,
+        meta: [
+            { name: 'description', content: 'Build your game profile and get personalized recommendations' },
+            { property: 'og:title', content: `Your Profile — ${SITE_NAME}` },
+            { property: 'og:description', content: 'Build your game profile and get personalized recommendations' },
+            { property: 'og:url', content: `${SITE_URL}/profile` },
+            { property: 'og:site_name', content: SITE_NAME },
+            { property: 'og:type', content: 'website' },
+        ],
+        link: [
+            { rel: 'canonical', href: `${SITE_URL}/profile` },
+        ],
+    })
+
     const { savedGames, addGame: addToProfile, addGames: addAllToProfile, removeGame: removeFromProfile, clearGames, updateHours } = useProfileGames()
     const [steamId, setSteamId] = useState("")
 

@@ -1,9 +1,11 @@
 import { useParams } from 'react-router-dom'
 import { getGameGamesAppIdGetOptions } from '../client/@tanstack/react-query.gen'
 import { useQuery } from '@tanstack/react-query'
+import { useHead } from '@unhead/react'
 import { NavigationBar } from '../components/NavigationBar'
 import { GameCard } from '../components/GameCard'
 import { useProfileGames } from '../hooks/useProfileGames'
+import { SITE_URL, SITE_NAME } from '../lib/seo'
 
 export default function GamePage() {
     const { id } = useParams<{ id: string }>()
@@ -12,6 +14,56 @@ export default function GamePage() {
     const { data: game, isLoading, isError } = useQuery({
         ...getGameGamesAppIdGetOptions({ path: { app_id: Number(id) } }),
         enabled: !!id,
+    })
+
+    const canonicalUrl = id ? `${SITE_URL}/games/${id}` : SITE_URL
+
+    useHead(game ? {
+        title: `${game.game_name} — ${SITE_NAME}`,
+        meta: [
+            { name: 'description', content: game.short_description },
+            { property: 'og:title', content: game.game_name },
+            { property: 'og:description', content: game.short_description },
+            { property: 'og:url', content: canonicalUrl },
+            { property: 'og:site_name', content: SITE_NAME },
+            { property: 'og:type', content: 'website' },
+            ...(game.header_image ? [{ property: 'og:image' as const, content: game.header_image }] : []),
+        ],
+        link: [
+            { rel: 'canonical', href: canonicalUrl },
+        ],
+        script: [
+            {
+                type: 'application/ld+json',
+                innerHTML: JSON.stringify({
+                    '@context': 'https://schema.org',
+                    '@type': 'VideoGame',
+                    name: game.game_name,
+                    description: game.short_description,
+                    ...(game.header_image ? { image: game.header_image } : {}),
+                    genre: game.genres,
+                    gameServer: {
+                        '@type': 'GameServer',
+                        name: 'Steam',
+                        playersOnline: '0',
+                    },
+                }),
+            },
+            {
+                type: 'application/ld+json',
+                innerHTML: JSON.stringify({
+                    '@context': 'https://schema.org',
+                    '@type': 'BreadcrumbList',
+                    itemListElement: [
+                        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+                        { '@type': 'ListItem', position: 2, name: game.game_name, item: canonicalUrl },
+                    ],
+                }),
+            },
+        ],
+    } : {
+        title: `Game — ${SITE_NAME}`,
+        link: [{ rel: 'canonical', href: canonicalUrl }],
     })
 
     if (isLoading) return <p className="text-text-dim mt-8 text-center">Loading...</p>

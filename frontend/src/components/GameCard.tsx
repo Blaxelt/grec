@@ -9,7 +9,7 @@ type Props = {
     variant?: 'row' | 'image-only'
 }
 
-export function GameCard({ appId, gameName, headerImage, score, tags, variant = 'row' }: Props) {
+export function GameCard({ appId, gameName, headerImage, score: _score, tags, variant = 'row' }: Props) {
     if (variant === 'image-only') {
         return (
             <Link to={`/games/${appId}`}>

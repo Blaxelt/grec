@@ -5,13 +5,29 @@ import { NavigationBar } from "../components/NavigationBar";
 import { GameCard } from "../components/GameCard";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useHead } from "@unhead/react";
 import { searchGamesGamesSearchGetOptions, searchGamesByTagsGamesByTagsGetInfiniteOptions } from '../client/@tanstack/react-query.gen';
 import type { GameSearchResult, PaginatedGameTagResult } from '../client';
 import { useDebouncedQuery } from '../hooks/useDebouncedQuery';
+import { SITE_URL, SITE_NAME } from '../lib/seo';
 
 const PAGE_SIZE = 10;
 
 export default function SearchGame() {
+    useHead({
+        title: `Search Games — ${SITE_NAME}`,
+        meta: [
+            { name: 'description', content: 'Search and browse games by name or tags' },
+            { property: 'og:title', content: `Search Games — ${SITE_NAME}` },
+            { property: 'og:description', content: 'Search and browse games by name or tags' },
+            { property: 'og:url', content: `${SITE_URL}/search` },
+            { property: 'og:site_name', content: SITE_NAME },
+            { property: 'og:type', content: 'website' },
+        ],
+        link: [
+            { rel: 'canonical', href: `${SITE_URL}/search` },
+        ],
+    })
     const { query, setQuery, debouncedQuery } = useDebouncedQuery()
     const navigate = useNavigate();
 
