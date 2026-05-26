@@ -4,6 +4,8 @@ GREC lets you search for a Steam game and get a ranked list of similar titles. R
 
 Try it live at [grec.blaxelt.com/](https://grec.blaxelt.com/).
 
+The application is deployed using Docker containers on a VPS, reverse-proxied through Caddy, with automated deployments via GitHub Actions.
+
 ## How it works
 
 1. **Pipeline** - downloads the [Steam Games Dataset](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset) from Kaggle, cleans the data, builds a composite feature vector per game, and stores everything in PostgreSQL via `pgvector`. Trains the ALS model on the [Game Recommendations on Steam Dataset](https://www.kaggle.com/datasets/antonkozyriev/game-recommendations-on-steam).
@@ -67,6 +69,10 @@ docker compose up
 
 ![Game details](./img/game_details_2.png)
 
+### Search Page
+
+![Search Page](./img/searchpage.png)
+
 ### Profile
 
 ![Profile](./img/library.png)
@@ -80,7 +86,7 @@ docker compose up
 - **Collaborative filtering** - `implicit`
 - **Backend** - FastAPI + SQLModel
 - **Frontend** - React + Vite + TanStack Query
-- **CI** - GitHub Actions
+- **CI/CD** - GitHub Actions
 
 ## Limitations
 
