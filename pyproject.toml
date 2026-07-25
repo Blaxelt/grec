@@ -19,6 +19,9 @@ backend = [
     "fastapi[standard]>=0.129.0",
     "implicit>=0.7.2",
     "requests",
+    "langchain>=0.3.0",
+    "langgraph>=0.2.0",
+    "langchain-google-genai>=2.0.0",
 ]
 pipeline = [
     "kagglehub>=0.4.3",
