@@ -242,6 +242,20 @@ export type ValidationError = {
     };
 };
 
+export type HealthCheckHealthGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/health';
+};
+
+export type HealthCheckHealthGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
 export type SearchGamesGamesSearchGetData = {
     body?: never;
     path?: never;
@@ -492,17 +506,3 @@ export type GetLibrarySteamLibrarySteamIdGetResponses = {
 };
 
 export type GetLibrarySteamLibrarySteamIdGetResponse = GetLibrarySteamLibrarySteamIdGetResponses[keyof GetLibrarySteamLibrarySteamIdGetResponses];
-
-export type HealthCheckHealthGetData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/health';
-};
-
-export type HealthCheckHealthGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};

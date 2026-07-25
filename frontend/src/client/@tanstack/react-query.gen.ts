@@ -39,6 +39,24 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     return [params];
 };
 
+export const healthCheckHealthGetQueryKey = (options?: Options<HealthCheckHealthGetData>) => createQueryKey('healthCheckHealthGet', options);
+
+/**
+ * Health Check
+ */
+export const healthCheckHealthGetOptions = (options?: Options<HealthCheckHealthGetData>) => queryOptions<unknown, DefaultError, unknown, ReturnType<typeof healthCheckHealthGetQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await healthCheckHealthGet({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: healthCheckHealthGetQueryKey(options)
+});
+
 export const searchGamesGamesSearchGetQueryKey = (options: Options<SearchGamesGamesSearchGetData>) => createQueryKey('searchGamesGamesSearchGet', options);
 
 /**
@@ -135,27 +153,30 @@ export const searchGamesByTagsGamesByTagsGetInfiniteQueryKey = (options: Options
  *
  * Search games by tags (AND logic — games must have all selected tags).
  */
-export const searchGamesByTagsGamesByTagsGetInfiniteOptions = (options: Options<SearchGamesByTagsGamesByTagsGetData>) => infiniteQueryOptions<SearchGamesByTagsGamesByTagsGetResponse, SearchGamesByTagsGamesByTagsGetError, InfiniteData<SearchGamesByTagsGamesByTagsGetResponse>, QueryKey<Options<SearchGamesByTagsGamesByTagsGetData>>, number | Pick<QueryKey<Options<SearchGamesByTagsGamesByTagsGetData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<SearchGamesByTagsGamesByTagsGetData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            query: {
-                offset: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await searchGamesByTagsGamesByTagsGet({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: searchGamesByTagsGamesByTagsGetInfiniteQueryKey(options)
-});
+export const searchGamesByTagsGamesByTagsGetInfiniteOptions = (options: Options<SearchGamesByTagsGamesByTagsGetData>) => {
+    const opts = infiniteQueryOptions<SearchGamesByTagsGamesByTagsGetResponse, SearchGamesByTagsGamesByTagsGetError, InfiniteData<SearchGamesByTagsGamesByTagsGetResponse>, QueryKey<Options<SearchGamesByTagsGamesByTagsGetData>>, number | Pick<QueryKey<Options<SearchGamesByTagsGamesByTagsGetData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<SearchGamesByTagsGamesByTagsGetData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    offset: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await searchGamesByTagsGamesByTagsGet({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: searchGamesByTagsGamesByTagsGetInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const getGameGamesAppIdGetQueryKey = (options: Options<GetGameGamesAppIdGetData>) => createQueryKey('getGameGamesAppIdGet', options);
 
@@ -234,22 +255,4 @@ export const getLibrarySteamLibrarySteamIdGetOptions = (options: Options<GetLibr
         return data;
     },
     queryKey: getLibrarySteamLibrarySteamIdGetQueryKey(options)
-});
-
-export const healthCheckHealthGetQueryKey = (options?: Options<HealthCheckHealthGetData>) => createQueryKey('healthCheckHealthGet', options);
-
-/**
- * Health Check
- */
-export const healthCheckHealthGetOptions = (options?: Options<HealthCheckHealthGetData>) => queryOptions<unknown, DefaultError, unknown, ReturnType<typeof healthCheckHealthGetQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await healthCheckHealthGet({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: healthCheckHealthGetQueryKey(options)
 });
