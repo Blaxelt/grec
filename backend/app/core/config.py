@@ -1,13 +1,17 @@
 from pathlib import Path
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
+load_dotenv(_PROJECT_ROOT / ".env")
 
 
 class Settings(BaseSettings):
     database_url: str
     steam_api_key: str = ""
+    chat_model: str = ""
     cors_origin: str = "http://localhost:5173"
     cf_model_dir: Path = _PROJECT_ROOT / "data" / "models" / "cf"
 
