@@ -5,6 +5,7 @@ import { useTheme } from "../hooks/useTheme";
 const navItems = [
     { label: "Home", to: "/" },
     { label: "Search", to: "/search" },
+    { label: "Advisor", to: "/chat" },
     { label: "Profile", to: "/profile" },
 ];
 
