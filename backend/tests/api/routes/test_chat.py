@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 from fastapi.testclient import TestClient
+from langgraph.errors import GraphRecursionError
 
 from app.main import app
 from app.models import GameRecommendation
@@ -52,7 +53,7 @@ def test_chat_returns_reply():
 
 
 def test_chat_returns_games_collected_by_tools():
-    def fake_make_tools(session, collector, app_ids=None, hours_played=None):
+    def fake_make_tools(session_factory, collector, app_ids=None, hours_played=None):
         collector[FAKE_RECOMMENDATION.app_id] = FAKE_RECOMMENDATION
         return []
 
@@ -75,7 +76,7 @@ def test_chat_returns_games_collected_by_tools():
 def test_chat_passes_library_to_tools():
     captured = {}
 
-    def fake_make_tools(session, collector, app_ids=None, hours_played=None):
+    def fake_make_tools(session_factory, collector, app_ids=None, hours_played=None):
         captured["app_ids"] = app_ids
         captured["hours_played"] = hours_played
         return []
@@ -143,6 +144,21 @@ def test_chat_returns_500_on_unexpected_agent_error():
     assert response.json()["detail"] == "Chat assistant is currently unavailable"
 
 
+def test_chat_returns_friendly_reply_on_recursion_limit():
+    with (
+        patch("app.api.routes.chat.settings") as mock_settings,
+        patch("app.api.routes.chat.run_chat") as mock_run,
+    ):
+        mock_settings.chat_model = "test-model"
+        mock_run.side_effect = GraphRecursionError("Recursion limit of 10 reached")
+        response = client.post(CHAT_URL, json=VALID_BODY)
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "couldn't settle" in data["reply"].lower()
+    assert data["games"] == []
+
+
 
 def test_chat_returns_422_when_message_is_empty():
     response = client.post(CHAT_URL, json={"message": ""})
@@ -189,23 +205,31 @@ def make_tools(mock_session):
     from app.agents.tools import make_tools
 
     collector = {}
-    tools = make_tools(mock_session, collector)
+    tools = make_tools(lambda: mock_session, collector)
     return {t.name: t for t in tools}, collector
 
 
 def test_tools_without_library_has_no_profile_tool():
     tools, _ = make_tools(MagicMock())
-    assert set(tools) == {"search_games", "get_game_details", "recommend_similar_games"}
+    assert set(tools) == {
+        "search_games",
+        "get_game_details",
+        "recommend_similar_games",
+        "search_tags",
+        "search_games_by_tags",
+    }
 
 
 def test_tools_with_library_adds_profile_tool():
     from app.agents.tools import make_tools
 
-    tools = make_tools(MagicMock(), {}, app_ids=[1], hours_played=[10.0])
+    tools = make_tools(lambda: MagicMock(), {}, app_ids=[1], hours_played=[10.0])
     assert {t.name for t in tools} == {
         "search_games",
         "get_game_details",
         "recommend_similar_games",
+        "search_tags",
+        "search_games_by_tags",
         "recommend_for_profile",
     }
 
@@ -255,6 +279,64 @@ def test_get_game_details_returns_message_when_not_found():
     assert result == "No game found with app_id 999."
 
 
+def make_fake_tag_row(app_id, name, wilson):
+    row = MagicMock()
+    row.app_id = app_id
+    row.game_name = name
+    row.header_image = f"http://example.com/{app_id}.jpg"
+    row.wilson_score = wilson
+    return row
+
+
+def test_search_tags_returns_matches():
+    mock_session = MagicMock()
+    mock_session.exec.return_value.all.return_value = ["Indie", "Short"]
+    tools, _ = make_tools(mock_session)
+
+    result = tools["search_tags"].invoke({"query": "ind"})
+
+    assert "- Indie" in result
+    assert "- Short" in result
+
+
+def test_search_tags_returns_message_when_no_matches():
+    mock_session = MagicMock()
+    mock_session.exec.return_value.all.return_value = []
+    tools, _ = make_tools(mock_session)
+
+    result = tools["search_tags"].invoke({"query": "zzz"})
+
+    assert result == "No tags found matching 'zzz'."
+
+
+def test_search_games_by_tags_collects_recommendations():
+    mock_session = MagicMock()
+    mock_session.exec.return_value.all.return_value = [
+        make_fake_tag_row(1, "A Short Hike", 0.97),
+        make_fake_tag_row(2, "Undertale", 0.95),
+    ]
+    tools, collector = make_tools(mock_session)
+
+    result = tools["search_games_by_tags"].invoke({"tags": ["Indie", "Short"], "top_n": 2})
+
+    assert "Top games tagged ['Indie', 'Short']" in result
+    assert "A Short Hike (app_id: 1, score: 0.97)" in result
+    assert collector[1].game_name == "A Short Hike"
+    assert collector[1].hybrid_score == 0.97
+    assert collector[2].game_name == "Undertale"
+
+
+def test_search_games_by_tags_returns_message_when_nothing_found():
+    mock_session = MagicMock()
+    mock_session.exec.return_value.all.return_value = []
+    tools, collector = make_tools(mock_session)
+
+    result = tools["search_games_by_tags"].invoke({"tags": ["Nonexistent"]})
+
+    assert result == "No games found with tags: Nonexistent."
+    assert collector == {}
+
+
 def test_recommend_similar_games_collects_recommendations():
     mock_session = MagicMock()
 
@@ -287,7 +369,7 @@ def test_recommend_for_profile_collects_recommendations():
     mock_session = MagicMock()
     mock_session.exec.return_value.all.return_value = [make_fake_game(1)]
     collector = {}
-    tools = make_tools(mock_session, collector, app_ids=[1], hours_played=[10.0])
+    tools = make_tools(lambda: mock_session, collector, app_ids=[1], hours_played=[10.0])
     profile_tool = {t.name: t for t in tools}["recommend_for_profile"]
 
     with patch("app.agents.tools.cf_model.recommend") as mock_recommend:
@@ -306,7 +388,7 @@ def test_recommend_for_profile_returns_message_when_nothing_found():
 
     mock_session = MagicMock()
     collector = {}
-    tools = make_tools(mock_session, collector, app_ids=[1], hours_played=[10.0])
+    tools = make_tools(lambda: mock_session, collector, app_ids=[1], hours_played=[10.0])
     profile_tool = {t.name: t for t in tools}["recommend_for_profile"]
 
     with patch("app.agents.tools.cf_model.recommend", return_value=[]):
@@ -314,3 +396,24 @@ def test_recommend_for_profile_returns_message_when_nothing_found():
 
     assert result == "No personalized recommendations available for this library."
     assert collector == {}
+
+
+def test_each_tool_call_uses_a_fresh_session():
+    """Regression test: LangGraph runs parallel tool calls concurrently, and a
+    SQLAlchemy Session is not thread-safe - every tool call must get its own."""
+    from app.agents.tools import make_tools
+
+    session_1, session_2 = MagicMock(), MagicMock()
+    session_1.exec.return_value.all.return_value = []
+    session_2.exec.return_value.all.return_value = []
+    session_factory = MagicMock(side_effect=[session_1, session_2])
+
+    tools = {t.name: t for t in make_tools(session_factory, {})}
+    tools["search_games"].invoke({"query": "elden"})
+    tools["search_tags"].invoke({"query": "indie"})
+
+    assert session_factory.call_count == 2
+    session_1.exec.assert_called_once()
+    session_2.exec.assert_called_once()
+    session_1.close.assert_called_once()
+    session_2.close.assert_called_once()
