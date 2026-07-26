@@ -1,5 +1,7 @@
 import logging
+from collections.abc import Callable
 
+from sqlalchemy import func
 from langchain_core.tools import BaseTool, tool
 from sqlmodel import Session, select
 
@@ -34,46 +36,122 @@ def _format_recommendations(recommendations: list[GameRecommendation]) -> str:
 
 
 def make_tools(
-    session: Session,
+    session_factory: Callable[[], Session],
     collector: dict[int, GameRecommendation],
     app_ids: list[int] | None = None,
     hours_played: list[float] | None = None,
 ) -> list[BaseTool]:
-    """Build the game-advisor tools bound to a DB session."""
-    
+    """Build the game-advisor tools.
+
+    `session_factory` must return a NEW Session on each call: LangGraph
+    executes parallel tool calls concurrently in a thread pool, and a
+    SQLAlchemy Session is not thread-safe (one connection per session).
+    """
     recommender = GameRecommender()
 
     @tool
     def search_games(query: str) -> str:
-        """Search for games in the database by (partial) name. Returns matching
-        game names with their app_ids. Use this to resolve a game title to an
-        app_id before calling get_game_details."""
+        """Look up games by title (partial match). Returns up to 5 titles with
+        their app_ids. Use ONLY for title lookups: to resolve a title to an
+        app_id for get_game_details, or to confirm exact spelling before
+        recommend_similar_games. NOT for genre/mood/theme searches - use
+        search_games_by_tags for those."""
         stmt = (
             select(Game.app_id, Game.game_name)
             .where(Game.game_name.ilike(f"%{query}%"))
             .order_by(Game.game_name)
             .limit(5)
         )
-        rows = session.exec(stmt).all()
+        session = session_factory()
+        try:
+            rows = session.exec(stmt).all()
+        finally:
+            session.close()
         if not rows:
             return f"No games found matching '{query}'."
         return "\n".join(f"- {name} (app_id: {app_id})" for app_id, name in rows)
 
     @tool
     def get_game_details(app_id: int) -> str:
-        """Get details about a specific game (genres, tags, review score,
-        description) by its app_id."""
-        game = session.get(Game, app_id)
+        """Get one game's details by app_id: genres, tags, review score (0-1),
+        and short description. Use when the user asks about a specific game,
+        or to verify a candidate before recommending it."""
+        session = session_factory()
+        try:
+            game = session.get(Game, app_id)
+        finally:
+            session.close()
         if game is None:
             return f"No game found with app_id {app_id}."
         return _format_details(game)
 
     @tool
+    def search_tags(query: str) -> str:
+        """Find official tag names matching a partial word (e.g. "indie" ->
+        "Indie", "coop" -> "Co-op"). Returns up to 10 tag names. Use BEFORE
+        search_games_by_tags to get exact tag spelling. Tags describe genre,
+        mood, theme, length, and player count."""
+        tag_subq = select(func.unnest(Game.tags).label("tag")).subquery()
+        stmt = (
+            select(tag_subq.c.tag)
+            .distinct()
+            .where(tag_subq.c.tag.ilike(f"%{query}%"))
+            .order_by(tag_subq.c.tag)
+            .limit(10)
+        )
+        session = session_factory()
+        try:
+            rows = session.exec(stmt).all()
+        finally:
+            session.close()
+        if not rows:
+            return f"No tags found matching '{query}'."
+        return "\n".join(f"- {tag}" for tag in rows)
+
+    @tool
+    def search_games_by_tags(tags: list[str], top_n: int = 5) -> str:
+        """List the best-reviewed games that have ALL the given tags (AND
+        logic), ranked by review score. Use for descriptive requests by genre,
+        mood, theme, length, or player count (e.g. tags=["Indie", "Short"]).
+        Pass exact tag names - call search_tags first if unsure. NOT for
+        title lookups."""
+        stmt = (
+            select(Game.app_id, Game.game_name, Game.header_image, Game.wilson_score)
+            .where(Game.tags.contains(tags))
+            .order_by(Game.wilson_score.desc())
+            .limit(top_n)
+        )
+        session = session_factory()
+        try:
+            rows = session.exec(stmt).all()
+        finally:
+            session.close()
+        if not rows:
+            return f"No games found with tags: {', '.join(tags)}."
+        recommendations = [
+            GameRecommendation(
+                app_id=row.app_id,
+                game_name=row.game_name,
+                header_image=row.header_image,
+                hybrid_score=round(float(row.wilson_score), 4),
+            )
+            for row in rows
+        ]
+        for r in recommendations:
+            collector.setdefault(r.app_id, r)
+        return f"Top games tagged {tags}:\n{_format_recommendations(recommendations)}"
+
+    @tool
     def recommend_similar_games(game_name: str, top_n: int = 5) -> str:
-        """Recommend games similar to the given game title, using content
-        similarity, review quality and what other players also played.
-        game_name must be the exact title; use search_games first if unsure."""
-        result = recommender.find_similar_games(session, game_name, top_n)
+        """Recommend games similar to a specific title ("games like X").
+        Blends content similarity, review quality, and what other players also
+        played. game_name must be the exact title - resolve it with
+        search_games first if the spelling is uncertain."""
+        session = session_factory()
+        try:
+            result = recommender.find_similar_games(session, game_name, top_n)
+        finally:
+            session.close()
         if result is None:
             return f"Game '{game_name}' not found in the database."
         target, recommendations = result
@@ -83,17 +161,29 @@ def make_tools(
             collector.setdefault(r.app_id, r)
         return f"Games similar to {target}:\n{_format_recommendations(recommendations)}"
 
-    tools: list[BaseTool] = [search_games, get_game_details, recommend_similar_games]
+    tools: list[BaseTool] = [
+        search_games,
+        get_game_details,
+        search_tags,
+        search_games_by_tags,
+        recommend_similar_games,
+    ]
 
     if app_ids and hours_played:
 
         @tool
         def recommend_for_profile(top_n: int = 10) -> str:
-            """Recommend games personalized to the user based on their Steam
-            library (the games they own and how long they played each). Use this
-            when the user asks for recommendations tailored to their taste."""
+            """Recommend games tailored to the user's own taste, based on their
+            Steam library (owned games + hours played each). Use ONLY when the
+            user asks for personalized picks ("what should I play next?",
+            "something for me"). NOT for descriptive requests or "games like
+            X"."""
             results = cf_model.recommend(app_ids, hours_played, top_n)
-            recommendations = build_recommendations_from_cf(session, results)
+            session = session_factory()
+            try:
+                recommendations = build_recommendations_from_cf(session, results)
+            finally:
+                session.close()
             if not recommendations:
                 return "No personalized recommendations available for this library."
             for r in recommendations:
