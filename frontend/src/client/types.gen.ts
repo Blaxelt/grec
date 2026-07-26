@@ -5,6 +5,62 @@ export type ClientOptions = {
 };
 
 /**
+ * ChatMessage
+ *
+ * A single message in the conversation history (kept client-side).
+ */
+export type ChatMessage = {
+    /**
+     * Role
+     */
+    role: 'user' | 'assistant';
+    /**
+     * Content
+     */
+    content: string;
+};
+
+/**
+ * ChatRequest
+ *
+ * Request body for the /chat endpoint.
+ */
+export type ChatRequest = {
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * History
+     */
+    history?: Array<ChatMessage>;
+    /**
+     * App Ids
+     */
+    app_ids?: Array<number> | null;
+    /**
+     * Hours Played
+     */
+    hours_played?: Array<number> | null;
+};
+
+/**
+ * ChatResponse
+ *
+ * Response wrapper for the /chat endpoint.
+ */
+export type ChatResponse = {
+    /**
+     * Reply
+     */
+    reply: string;
+    /**
+     * Games
+     */
+    games: Array<GameRecommendation>;
+};
+
+/**
  * GameDetail
  *
  * Full game detail for /games/{app_id}.
@@ -506,3 +562,28 @@ export type GetLibrarySteamLibrarySteamIdGetResponses = {
 };
 
 export type GetLibrarySteamLibrarySteamIdGetResponse = GetLibrarySteamLibrarySteamIdGetResponses[keyof GetLibrarySteamLibrarySteamIdGetResponses];
+
+export type ChatChatPostData = {
+    body: ChatRequest;
+    path?: never;
+    query?: never;
+    url: '/chat';
+};
+
+export type ChatChatPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ChatChatPostError = ChatChatPostErrors[keyof ChatChatPostErrors];
+
+export type ChatChatPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: ChatResponse;
+};
+
+export type ChatChatPostResponse = ChatChatPostResponses[keyof ChatChatPostResponses];

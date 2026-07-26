@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetGameGamesAppIdGetData, GetGameGamesAppIdGetErrors, GetGameGamesAppIdGetResponses, GetLibrarySteamLibrarySteamIdGetData, GetLibrarySteamLibrarySteamIdGetErrors, GetLibrarySteamLibrarySteamIdGetResponses, GetProfileRecommendationsRecommendProfilePostData, GetProfileRecommendationsRecommendProfilePostErrors, GetProfileRecommendationsRecommendProfilePostResponses, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetErrors, GetRecommendationsRecommendGetResponses, HealthCheckHealthGetData, HealthCheckHealthGetResponses, SearchGamesByTagsGamesByTagsGetData, SearchGamesByTagsGamesByTagsGetErrors, SearchGamesByTagsGamesByTagsGetResponses, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetErrors, SearchGamesGamesSearchGetResponses, SearchTagsGamesTagsGetData, SearchTagsGamesTagsGetErrors, SearchTagsGamesTagsGetResponses } from './types.gen';
+import type { ChatChatPostData, ChatChatPostErrors, ChatChatPostResponses, GetGameGamesAppIdGetData, GetGameGamesAppIdGetErrors, GetGameGamesAppIdGetResponses, GetLibrarySteamLibrarySteamIdGetData, GetLibrarySteamLibrarySteamIdGetErrors, GetLibrarySteamLibrarySteamIdGetResponses, GetProfileRecommendationsRecommendProfilePostData, GetProfileRecommendationsRecommendProfilePostErrors, GetProfileRecommendationsRecommendProfilePostResponses, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetErrors, GetRecommendationsRecommendGetResponses, HealthCheckHealthGetData, HealthCheckHealthGetResponses, SearchGamesByTagsGamesByTagsGetData, SearchGamesByTagsGamesByTagsGetErrors, SearchGamesByTagsGamesByTagsGetResponses, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetErrors, SearchGamesGamesSearchGetResponses, SearchTagsGamesTagsGetData, SearchTagsGamesTagsGetErrors, SearchTagsGamesTagsGetResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -78,3 +78,17 @@ export const getProfileRecommendationsRecommendProfilePost = <ThrowOnError exten
  * Get all games in a user's library that has more than 0 hours playtime.
  */
 export const getLibrarySteamLibrarySteamIdGet = <ThrowOnError extends boolean = false>(options: Options<GetLibrarySteamLibrarySteamIdGetData, ThrowOnError>): RequestResult<GetLibrarySteamLibrarySteamIdGetResponses, GetLibrarySteamLibrarySteamIdGetErrors, ThrowOnError> => (options.client ?? client).get<GetLibrarySteamLibrarySteamIdGetResponses, GetLibrarySteamLibrarySteamIdGetErrors, ThrowOnError>({ url: '/steam/library/{steam_id}', ...options });
+
+/**
+ * Chat
+ *
+ * Chat with the game-advisor agent.
+ */
+export const chatChatPost = <ThrowOnError extends boolean = false>(options: Options<ChatChatPostData, ThrowOnError>): RequestResult<ChatChatPostResponses, ChatChatPostErrors, ThrowOnError> => (options.client ?? client).post<ChatChatPostResponses, ChatChatPostErrors, ThrowOnError>({
+    url: '/chat',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});

@@ -3,8 +3,8 @@
 import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { getGameGamesAppIdGet, getLibrarySteamLibrarySteamIdGet, getProfileRecommendationsRecommendProfilePost, getRecommendationsRecommendGet, healthCheckHealthGet, type Options, searchGamesByTagsGamesByTagsGet, searchGamesGamesSearchGet, searchTagsGamesTagsGet } from '../sdk.gen';
-import type { GetGameGamesAppIdGetData, GetGameGamesAppIdGetError, GetGameGamesAppIdGetResponse, GetLibrarySteamLibrarySteamIdGetData, GetLibrarySteamLibrarySteamIdGetError, GetLibrarySteamLibrarySteamIdGetResponse, GetProfileRecommendationsRecommendProfilePostData, GetProfileRecommendationsRecommendProfilePostError, GetProfileRecommendationsRecommendProfilePostResponse, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetError, GetRecommendationsRecommendGetResponse, HealthCheckHealthGetData, SearchGamesByTagsGamesByTagsGetData, SearchGamesByTagsGamesByTagsGetError, SearchGamesByTagsGamesByTagsGetResponse, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetError, SearchGamesGamesSearchGetResponse, SearchTagsGamesTagsGetData, SearchTagsGamesTagsGetError, SearchTagsGamesTagsGetResponse } from '../types.gen';
+import { chatChatPost, getGameGamesAppIdGet, getLibrarySteamLibrarySteamIdGet, getProfileRecommendationsRecommendProfilePost, getRecommendationsRecommendGet, healthCheckHealthGet, type Options, searchGamesByTagsGamesByTagsGet, searchGamesGamesSearchGet, searchTagsGamesTagsGet } from '../sdk.gen';
+import type { ChatChatPostData, ChatChatPostError, ChatChatPostResponse, GetGameGamesAppIdGetData, GetGameGamesAppIdGetError, GetGameGamesAppIdGetResponse, GetLibrarySteamLibrarySteamIdGetData, GetLibrarySteamLibrarySteamIdGetError, GetLibrarySteamLibrarySteamIdGetResponse, GetProfileRecommendationsRecommendProfilePostData, GetProfileRecommendationsRecommendProfilePostError, GetProfileRecommendationsRecommendProfilePostResponse, GetRecommendationsRecommendGetData, GetRecommendationsRecommendGetError, GetRecommendationsRecommendGetResponse, HealthCheckHealthGetData, SearchGamesByTagsGamesByTagsGetData, SearchGamesByTagsGamesByTagsGetError, SearchGamesByTagsGamesByTagsGetResponse, SearchGamesGamesSearchGetData, SearchGamesGamesSearchGetError, SearchGamesGamesSearchGetResponse, SearchTagsGamesTagsGetData, SearchTagsGamesTagsGetError, SearchTagsGamesTagsGetResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -256,3 +256,22 @@ export const getLibrarySteamLibrarySteamIdGetOptions = (options: Options<GetLibr
     },
     queryKey: getLibrarySteamLibrarySteamIdGetQueryKey(options)
 });
+
+/**
+ * Chat
+ *
+ * Chat with the game-advisor agent.
+ */
+export const chatChatPostMutation = (options?: Partial<Options<ChatChatPostData>>): UseMutationOptions<ChatChatPostResponse, ChatChatPostError, Options<ChatChatPostData>> => {
+    const mutationOptions: UseMutationOptions<ChatChatPostResponse, ChatChatPostError, Options<ChatChatPostData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await chatChatPost({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
