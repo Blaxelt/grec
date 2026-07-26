@@ -17,6 +17,8 @@ services:
       - DATABASE_URL=postgresql://grec:grec@db:5432/grec
       - CF_MODEL_DIR=/app/models/cf
       - STEAM_API_KEY=${STEAM_API_KEY}
+      - CHAT_MODEL=${CHAT_MODEL}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
     depends_on:
       db:
         condition: service_healthy

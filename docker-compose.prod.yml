@@ -5,6 +5,8 @@
 #   POSTGRES_PASSWORD=<strong-random-password>
 #   CORS_ORIGIN=https://yourdomain.com
 #   STEAM_API_KEY=<your-key>
+#   CHAT_MODEL=google_genai:gemini-3.5-flash-lite
+#   GOOGLE_API_KEY=<your-ai-studio-key>
 
 services:
   frontend:
@@ -16,6 +18,8 @@ services:
       - DATABASE_URL=postgresql://grec:${POSTGRES_PASSWORD}@db:5432/grec
       - CORS_ORIGIN=${CORS_ORIGIN}
       - STEAM_API_KEY=${STEAM_API_KEY}
+      - CHAT_MODEL=${CHAT_MODEL}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
 
   db:
     environment:
